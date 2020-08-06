@@ -1,0 +1,283 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "小钉耙",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/index/detail",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
+		},
+		{
+			"path": "pages/about/about",
+			"style": {
+				"navigationBarTitleText": "关于我们"
+			}
+		},
+
+		{
+			"path": "pages/about/xieyi",
+			"style": {
+				"navigationBarTitleText": "用户协议"
+			}
+		},
+		{
+			"path": "pages/about/ys",
+			"style": {
+				"navigationBarTitleText": "隐私政策",
+				"navigationBarBackgroundColor": "#FFFFFF"
+			}
+		},
+		{
+			"path": "pages/feedback/index",
+			"style": {
+				"navigationBarTitleText": "意见反馈",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+		{
+			"path": "pages/member/user",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/member/myworks",
+			"style": {
+				"navigationBarTitleText": "我的接单",
+				"navigationBarBackgroundColor": "#FFFFFF"
+			}
+		},
+		{
+			"path": "pages/member/renwu",
+			"style": {
+				"navigationBarTitleText": "我的任务",
+				"navigationBarBackgroundColor": "#FFFFFF",
+				"app-plus": {
+					"bounce": "none",
+					"scrollIndicator": "none",
+					"titleNView": {
+						"buttons": [{
+							"text": "任务说明",
+							"fontSize": "12px",
+							"fontWeight": "normal",
+							"colorPressed": "#ddd",
+							"width": "120upx"
+						}]
+					}
+
+				}
+			}
+		},
+		{
+			"path": "pages/member/renwushuoming",
+			"style": {
+				"navigationBarTitleText": "任务说明",
+				"navigationBarBackgroundColor": "#FFFFFF"
+			}
+		},
+		{
+			"path": "pages/member/wallet",
+			"style": {
+				"navigationBarTitleText": "我的钱包",
+				"navigationBarBackgroundColor": "#fff"
+				// "navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/member/tixian",
+			"style": {
+				"navigationBarTitleText": "提现",
+				"navigationBarBackgroundColor": "#fff"
+				// "navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/member/chongzhi",
+			"style": {
+				"navigationBarTitleText": "充值",
+				"navigationBarBackgroundColor": "#fff"
+				// "navigationStyle":"custom"
+			}
+		},
+		{
+			"path": "pages/member/setting",
+			"style": {
+				"navigationBarTitleText": "设置中心",
+				"navigationBarBackgroundColor": "#fff"
+			}
+		},
+		{
+			"path": "pages/fabu/fabu",
+			"style": {
+				"navigationBarTitleText": "任务发布",
+				"navigationBarBackgroundColor": "#FFFFFF",
+				"navigationStyle": "custom",
+				"app-plus": {
+					"bounce": "none",
+					"scrollIndicator": "none",
+					"titleNView": {
+						"buttons": [{
+							"text": "任务教程",
+							"fontSize": "12px",
+							"fontWeight": "normal",
+							"colorPressed": "#ddd",
+							"width": "100px"
+						}]
+					}
+
+				}
+			}
+		},
+		{
+			"path": "pages/fabu/fabu2",
+			"style": {
+				"navigationBarTitleText": "任务说明",
+				"navigationBarBackgroundColor": "#FFFFFF",
+				"app-plus": {
+					"bounce": "none",
+					"scrollIndicator": "none",
+					"titleNView": {
+						"buttons": [{
+							"text": "任务教程",
+							"fontSize": "12px",
+							"fontWeight": "normal",
+							"colorPressed": "#ddd",
+							"width": "100px"
+						}]
+					}
+
+				}
+			}
+		},
+		{
+			"path": "pages/login/login",
+			"style": {		
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"titleNView": {
+						"autoBackButton": "false"
+					}
+				}
+			}
+		}, {
+			"path": "pages/login/forget",
+			"style": {}
+		}, {
+			"path": "pages/login/register",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path": "pages/help/index",
+			"style": {
+				"navigationBarTitleText": "帮助中心",
+				"navigationBarBackgroundColor": "#fff"
+
+			}
+		},
+		{
+			"path": "pages/shop/shop",
+			"style": {
+				"navigationBarTitleText": "商城",
+				"navigationBarBackgroundColor": "#fff"
+
+			}
+		},
+		{
+			"path": "pages/message/message",
+			"style": {
+				"navigationBarTitleText": "消息",
+				"navigationBarBackgroundColor": "#fff"		
+			}
+		},
+		{
+			"path": "pages/qian/qian",
+			"style": {
+				"navigationBarTitleText": "赚钱",
+				"navigationBarBackgroundColor": "#fff"		
+			}
+		},
+		{
+			"path": "pages/message/sys",
+			"style": {
+				"navigationBarTitleText": "系统公告",
+				"navigationBarBackgroundColor": "#fff"		
+			}
+		}
+	],
+	"tabBar": {
+		"color": "#666",
+		"selectedColor": "#282828",
+		"borderStyle": "white",
+		"backgroundColor": "#ffffff",
+		"list": [{
+				"pagePath": "pages/index/index",
+				"text": "首页",
+				"iconPath": "static/home.png",
+				"selectedIconPath": "static/home1.png"
+			},
+			{
+				"pagePath": "pages/shop/shop",
+				"text": "商城",
+				"iconPath": "static/shop.png",
+				"selectedIconPath": "static/shop1.png"
+			},
+			{
+				"pagePath": "pages/fabu/fabu",
+				"text": "发布",
+				"iconPath": "static/fabu.png",
+				"selectedIconPath": "static/fabu1.png"
+			},
+			{
+				"pagePath": "pages/qian/qian",
+				"text": "赚钱",
+				"iconPath": "static/wallet.png",
+				"selectedIconPath": "static/wallet1.png"
+			},
+			{
+				"pagePath": "pages/member/user",
+				"text": "我的",
+				"iconPath": "static/my.png",
+				"selectedIconPath": "static/my1.png"
+			}
+		]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "小钉耙",
+		"navigationBarBackgroundColor": "#fff",
+		"backgroundColor": "#F8F8F8",
+		"backgroundColorTop": "#FFFFFF",
+		"app-plus": {
+			"bounce": "none",
+			"animationType": "slide-in-left",
+			"animationDuration": 300,
+			"titleNView": {
+				"splitLine": {
+					"color": "#E7E7E9",
+					"height":"0.5px"
+				}
+			}
+		}
+
+	},
+	"condition" : { //模式配置，仅开发期间生效
+		"current": 0, //当前激活的模式(list 的索引项)
+		"list": [
+			{
+				"name": "", //模式名称
+				"path": "", //启动页面，必选
+				"query": "" //启动参数，在页面的onLoad函数里面得到
+			}
+		]
+	}
+}
