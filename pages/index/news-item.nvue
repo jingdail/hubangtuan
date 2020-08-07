@@ -1,0 +1,115 @@
+<template>
+    <view class="media-item view" v-if="newsItem.title" @click="click">
+        <view class="flex-row">            
+            <view  class="flex-col" >
+                <image  class="image-list1" :src="newsItem.avatarurl" lazy-load=""></image> 
+            </view>
+			<view class="flex-row image-section">
+				<view class="box">
+					<view><text class="media-title">{{newsItem.title}}</text></view>
+					<view class="flex-row tag">
+						<text class="tag1">剩余数量:</text>
+						<text class="tag2">{{newsItem.done_num}}</text>
+						<text class="tag3">/{{newsItem.num}}</text>
+					</view>
+				</view>
+				<view class="god">
+					<text class="god-text">+{{formatNum(newsItem.price)}}</text>
+				</view>
+			</view>
+        </view>      
+        <view class="media-item-line" style="position: absolute;"></view>
+    </view>
+</template>
+
+<script>
+    export default {
+        props: {
+            newsItem: {
+                type: Object,
+                default: function(e) {
+                    return {}
+                }
+            }
+        },
+        methods: {
+			formatNum(e){
+				return Math.ceil(e); 
+			},
+            click() {
+                this.$emit('click');
+            },
+            close(e) {
+                e.stopPropagation();
+                this.$emit('close');
+            }
+        }
+    }
+</script>
+
+<style lang="scss">
+	.god{				
+		width: 100rpx;
+	}
+	.god-text{
+		font-size: 32upx;
+		color: $uni-base-color;		
+	}
+	.media-title{
+		font-size: 24upx;
+		color: #333;
+		margin-bottom: 10px;
+		
+	}
+	.tag1 {
+		font-size: $font-sm;
+		color: $uni-font-color-base;
+	}
+	.tag2 {
+		padding-left: 10upx;
+		font-size: $font-sm;
+		color: $uni-base-color;
+	}
+	.tag3 {
+		font-size: $font-sm;
+		color: $uni-font-color-base;
+	}
+	.box{
+		width: 480rpx;
+		color: red;
+	}
+	.media-item{
+		padding: 30upx  20upx;
+		margin: 10upx 15upx;
+		text-overflow: clip;
+		border-radius: 10upx;
+		background-color: #fff;
+	}
+    .view {
+        flex-direction: column;
+    }
+
+    .flex-row {
+        flex-direction: row;
+    }
+
+    .flex-col {
+        flex-direction: column;
+    }
+   
+
+   
+	
+    .image-section {
+	  margin-left: 10px;
+      justify-content: space-between;	 
+	  align-items: center;
+    }
+	.image-list1{
+		width: 90upx;
+		height: 90upx;
+		border-radius: 1000px;
+	}
+
+    
+</style>

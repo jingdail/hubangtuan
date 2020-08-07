@@ -1,0 +1,27 @@
+<template>
+	<view class="detail-box">
+	wister
+	</view>
+</template>
+
+<script>
+	export default {		
+		data() {
+			return {
+				banner: {},
+				content: []
+			}
+		},
+		onLoad(event) {
+			let detail = JSON.parse(decodeURIComponent(event.query));		
+			console.log(detail)
+			uni.setNavigationBarTitle({
+				title: detail.title
+			})
+		},		
+		methods: {}
+	}
+</script>
+
+<style>
+</style>
