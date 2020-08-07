@@ -10,5 +10,6 @@ module.exports = {
 	jinbi: Base + "api/jinbi",
 	logon: Base + "logon",
 	daka: Base + 'daka',
-	my: Base + 'my'
+	my: Base + 'my',
+	myinfo: Base + 'my/myinfo/'
 };
