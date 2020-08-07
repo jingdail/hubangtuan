@@ -212,6 +212,13 @@
 				"navigationBarTitleText": "系统公告",
 				"navigationBarBackgroundColor": "#fff"		
 			}
+		},
+		{
+			"path": "pages/pub/chooseClass",
+			"style": {
+				"navigationBarTitleText": "发布",
+				"navigationBarBackgroundColor": "#fff"		
+			}
 		}
 	],
 	"tabBar": {
@@ -275,7 +282,7 @@
 		"list": [
 			{
 				"name": "", //模式名称
-				"path": "", //启动页面，必选
+				"path": "pages/pub/chooseClass", //启动页面，必选
 				"query": "" //启动参数，在页面的onLoad函数里面得到
 			}
 		]
