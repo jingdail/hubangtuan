@@ -2,7 +2,7 @@
 	<view class="container">
 		<view class="logo">
 			<view><image src="../../static/logo.png" mode=""></image></view>
-			<view class="app-nv">小钉耙</view>
+			<view class="app-nv">小钉耙00</view>
 		</view>
 		<view class="cover-container">
 			<view class="history-section icon">	
