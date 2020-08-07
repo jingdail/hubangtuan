@@ -4,15 +4,19 @@
 		<!-- top="xxx"下拉布局往下偏移,防止被悬浮菜单遮住 -->
 		 <mescroll-body ref="mescrollRef" @init="mescrollInit"  @down="downCallback" :up="upOption"  @up="upCallback" @emptyclick="emptyClick">
 			<!-- 数据列表 --> 
-			<good-list :list="dataList"></good-list>
+			<RenwuList :list="dataList"></RenwuList>
 		</mescroll-body>
 	</view>
 </template>
 
 <script>
 	import MescrollMixin from "@/components/mescroll-uni/mescroll-mixins.js";	
+	import RenwuList from "@/components/renwu/renwu-list.vue";
 	export default {
 		mixins: [MescrollMixin], // 使用mixin (在main.js注册全局组件)
+		components: {
+			RenwuList
+		},
 		data() {
 			return {
 				upOption:{
@@ -27,7 +31,7 @@
 					}
 				},
 				dataList: [], //列表数据
-				tabs: ['全部', '待提交', '审核中','未通过','已完成'],
+				tabs: [],
 				tabIndex: 0 ,// tab下标
 				cateid:0//当前分类ID
 			}
@@ -50,12 +54,12 @@
 			upCallback(page) {
 				let pageNum = page.num; // 页码, 默认从1开始
 				let pageSize = page.size; // 页长, 默认每页10条
-				var url = this.$Api('list')+'page/'+pageNum+'/cate/'+this.cateid;
+				var url = this.$Api('myinfo')+'page/'+pageNum;
 				var that = this;
-				this.$http.get(url,{pid:0},{isFactory: false}).then(function (res) {
-					// 接口返回的当前页数据列表 (数组)
-					console.log(res)
+				this.$http.get(url,{},{isFactory: false}).then(function (res) {
+					// 接口返回的当前页数据列表 (数组)					
 					let curPageData = res.data.data
+					console.log(curPageData)
 					// 接口返回的当前页数据长度 (如列表有26个数据,当前页返回8个,则curPageLen=8)
 					let curPageLen = curPageData.length; 
 					// 接口返回的总页数 (如列表有26个数据,每页10条,共3页; 则totalPage=3)
