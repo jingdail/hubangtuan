@@ -11,5 +11,6 @@ module.exports = {
 	logon: Base + "logon",
 	daka: Base + 'daka',
 	my: Base + 'my',
-	myinfo: Base + 'my/myinfo/'
+	myinfo: Base + 'my/myinfo/',
+	cate:'https://app.wolewan.com/json/categories.json'
 };

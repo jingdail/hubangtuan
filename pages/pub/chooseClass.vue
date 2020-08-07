@@ -1,7 +1,11 @@
 <template>
 	<view>
+		<text></text>
 		<view class="class-box">
-			<view class="class-item"  v-for="(item,index) in categoryList">{{item.pdName}}</view>
+			<view class="class-item"  v-for="(item,index) in categoryList" :key="item.typeid">{{item.name}}</view>
+		</view>
+		<view class="class-box">
+			<view class="class--item"  v-for="(item,index) in categoryList[0]['subclass']" :key="item.typeid">{{item.name}}</view>
 		</view>
 	</view>
 </template>
@@ -21,13 +25,18 @@
 			}
 		},		
 		onLoad() {
+			
+		},
+		onShow() {
+			var that = this;
 			uni.request({
-				url:"",
+				url:this.$Api('cate'),
 				success(res) {
-					console.log(res)
+					that.categoryList = res.data.categories
+					console.log(res.data.categories)
 				}
 			})
-		}
+		},
 		computed: {},
 		methods: {}
 	}
@@ -37,17 +46,33 @@
 		background-color: #F2F3F6;
 	}
 	.class-box{
-		display: flex;
+		display: flex;		
+		flex-wrap: wrap;
 		justify-content: space-between;
 		align-items: center;
-		
+		margin: 20upx;
+		padding: 20upx;
+		background-color: #fff;
+		margin-bottom: 30px;
 	}
 	.class-item{
 		border-radius: 100upx;
 		border: 1px solid #FF5000;
 		padding: 20upx;
 		text-align: center;
-		font-size: 34upx;
-		font-weight: bold;
+		font-size: 32upx;
+		color: #000000;
+		width: 220rpx;
+		margin-bottom: 20upx;
+	}
+	.class--item{
+		border-radius: 100upx;
+		border: 1px solid #FF5000;
+		padding: 20upx;
+		text-align: center;
+		font-size: 32upx;
+		color: #000000;
+		width: 300rpx;
+		margin-bottom: 20upx;
 	}
 </style>
