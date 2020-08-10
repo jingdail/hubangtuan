@@ -47,6 +47,56 @@ function friendlyDate(timestamp) {
 	}
 	return formats[diffType].replace('%n%', diffValue);
 }
+//复制
+function Copy(data){
+	uni.setClipboardData({
+		data:data,
+		success: () => {
+			uni.showToast({
+				title:"复制成功",
+				icon:"none"
+			})
+		},
+		fail: () => {
+			uni.showToast({
+				title:"复制失败",
+				icon:"none"
+			})
+		}
+	})
+}
+// 调用第三方程序
+function openApp(index){
+	let appList = [
+		{
+			pname:"com.taobao.taobao",
+			action:""
+		},
+		{
+			pname:"com.xunmeng.pinduoduo",
+			action:""
+		},
+		{
+			pname:"com.tencent.mm",
+			action:""
+		}
+	]
+	if(plus.runtime.isApplicationExist(appList[index])){		
+		plus.runtime.launchApplication( {pname:appList[index].pname}, function ( e ) {
+				uni.showToast({
+					title:"应用打开失败",
+					icon:"none"
+				})
+		} );
+	}else{
+		uni.showToast({
+			title:"未安装指定应用程序",
+			icon:"none"
+		})
+	}
+}
 export {
-	friendlyDate
+	friendlyDate,
+	Copy,
+	openApp
 }
