@@ -3,17 +3,20 @@
 	<view>
 		<view class="renwu"  v-for="(item,index) in list" :key="index" @tap="ToDetail(item)">
 			<view class="logo">
-				<image src="../../static/alipay.png" mode=""></image>
+				<image :src="item.avatarurl" mode=""></image>
 			</view>
 			<view class="content">
 				<view class="header">
-					<view class="title">{{item.title}}</view>
-					<view class="done-num">{{item.num}}</view>
+					<view class="title">
+					{{item.title}}
+					
+					</view>
+					<view class="done-num">{{item.done_num}}/{{item.num}}</view>
 				</view>
 				<view class="action-box">
-					<view class="" @click="actionMenu(1)">1</view>
-					<view class="" @click="actionMenu(2)">1</view>
-					<view class="" @click="actionMenu(3)">1</view>
+					<view class="btn" @click="actionMenu(1)">关闭任务</view>
+					<view class="btn" @click="actionMenu(2)">置顶推荐</view>
+					<view class="btn" @click="actionMenu(3)">去审核</view>
 				</view>
 			</view>
 		</view>
@@ -52,16 +55,15 @@
 </script>
 
 <style lang="scss">
-	page{
-		background-color: #fff;
-	}
+	
 	.renwu{
 		position: relative;
 		background-color: #fff;
 		display: flex;
 		justify-content: flex-start;		
-		margin: 15upx;
-		padding: 20upx 10upx;
+		margin: 20upx;
+		padding: 20upx 20upx;
+		
 	}
 	.border-bottom{
 		position: absolute;
@@ -84,6 +86,12 @@
 	.action-box,.header{
 		display: flex;
 		justify-content: space-between;		
+	}
+	.btn{
+		border-radius: 3px;
+		border: 0.5px solid #FF5000;
+		padding: 8upx 20upx;
+		color: #FF5000;
 	}
 	
 </style>

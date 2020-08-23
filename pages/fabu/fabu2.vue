@@ -3,23 +3,26 @@
 		<view class="step">
 			<uni-steps :options="[{title: '填写任务要求'}, {title: '设置任务详情'}]" :active="1" active-color="#FF5000"></uni-steps>
 		</view>
-		
+		<!-- 非自定义 -->
 		<view class="u-box">
 			<view class="form-label">
 				<textarea placeholder="请添加任务链接和完整任务口令(删减文字口令会失效)"  @input="getText"/>
 			</view>			
 		</view>
 		
+		
+		
 		<view class="form-box">
 			
 			<view style="text-align: center;padding: 5px;font-size: 16px;">添加示例验证图</view>
+			
 			<view style="font-size: 12px;color: #666;text-align: center;padding: 5px;line-height: 1.5;">
 				下图为系统自动为您匹配的验证图
 				<view>您也可以点击<text style="color: red;">[更换验证图]</text>来换成自己的验证图</view>
 			</view>
 			<view class="shiliimg">
 				<view class="changeImage" @click="chose()">更换验证图</view>
-				<image :src="detail.yanzhengtu" @click="previewImage()" mode="widthFix">
+				<image :src="Temp_yanzhengtu" @click="previewImage()" class="yzt" mode="widthFix">
 			</view>
 		</view>
 		
@@ -39,10 +42,13 @@
 					timex: null,  
 					danshu:null,
 					xiangqing:null,
-					yanzhengtu:null,
 					typeid:null,
-					subclassid:null
+					subclassid:null,
+					title:null,
+					zhuli:null
 				},
+				
+				Temp_yanzhengtu:null
 				
 	        }
 	    },
@@ -78,17 +84,16 @@
 						uni.showLoading({
 							title:'上传中'
 						})
-						that.detail.yanzhengtu=res.tempFilePaths[0];
 				        const uploadTask = uni.uploadFile({
-				              url : that.$Sysconf('publish'),
+				              url : that.$Api('uploadpic'),
 				              filePath: res.tempFilePaths[0],
 				              name: 'file',
 				              formData: {
 				               'user': 'test'
 				              },
 				              success: function (uploadFileRes) {
-								  uni.hideLoading()								
-								  // that.detail.yanzhengtu=uploadFileRes.data
+								  uni.hideLoading()	
+								  that.Temp_yanzhengtu=that.$Api('base')+"uploads/"+uploadFileRes.data
 				              }
 				             });
 				    }
@@ -96,12 +101,12 @@
 			},
 			previewImage:function(){
 				uni.previewImage({
-					urls: [this.detail.yanzhengtu],
+					urls: [this.Temp_yanzhengtu],
 					current:0
 				})
 			},			
 			submit(){
-				if(this.detail.yanzhengtu==null || this.detail.yanzhengtu==''){
+				if(this.Temp_yanzhengtu==null || this.Temp_yanzhengtu==''){
 					this.$queue.showToast("请添加验证示例图片");
 				}
 				if(this.detail.xiangqing.length<=0){
@@ -118,15 +123,36 @@
 				 */
 				param.typeid = detail.typeid
 				param.num = detail.danshu
-				param.title = detail.title
+				param.title = detail.typeinfo
 				param.content = detail.xiangqing
-				param.pic = detail.yanzhengtu
+				param.pic = this.Temp_yanzhengtu
 				param.valid_date = detail.timex
 				param.price = detail.gold
 				param.subclassid = detail.subclassid
-				this.$http.post(this.$Sysconf('publish'),param,{isFactory: false})
+				console.log(param)
+				this.$http.post(this.$Api('publish'),param,{isFactory: false})
 				.then(function (response) {
-					console.log(response)	
+					console.log(response)
+					if(response.data.error=="0"){
+						uni.showToast({
+							title:'发布成功'
+						})
+						setTimeout(function(){
+							uni.redirectTo({
+								url:'/pages/member/renwu'
+							})
+						},2000)
+					}else{
+						uni.showModal({
+							title:'金币不足，前去充值',
+							cancelText:'取消',
+							confirmText:'确定',
+							success: (e) => {
+								console.log(e)
+							}
+						})
+						return false;
+					}
 				}).catch(function (error) {
 				    //这里只会在接口是失败状态返回，不需要去处理错误提示
 				    console.log(error);
@@ -236,13 +262,14 @@
 		text-align: right;
 	}
 	.shiliimg{
-		border:1px solid #FF5000;
-		padding: 1px;
-		width: 70%;
+		width: 60%;
 		margin: 0 auto;
 		position: relative;
-		border-radius: 5px;
 		overflow: hidden;
+	}
+	.yzt{
+		border: 1px solid #FF5000;
+		
 	}
 	.changeImage{
 		position: absolute;
@@ -251,15 +278,15 @@
 		width: 100%;
 		background-color: #FF5000;
 		z-index: 10;
+		height: 40px;
+		line-height: 30px;
 		text-align: center;
 		color: #fff;
 		padding: 5px 0;
 	}
-	image{
-		width: 100%;
-		border-radius: 5px;
-	}
+	
 	textarea{
-		height: 200px;
+		height: 120px;
+		width: 100%;
 	}
 </style>

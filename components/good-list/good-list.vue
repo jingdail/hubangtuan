@@ -109,6 +109,9 @@
 		text-align: left;
 		color: #333;
 		margin-bottom: 10px;
+		text-overflow: clip;
+		white-space: nowrap;
+		overflow: hidden;
 	}
 
 	.pd-li .pd-tag {

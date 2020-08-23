@@ -27,9 +27,7 @@
         props: {
             newsItem: {
                 type: Object,
-                default: function(e) {
-                    return {}
-                }
+                default: ''
             }
         },
         methods: {
@@ -59,7 +57,9 @@
 		font-size: 24upx;
 		color: #333;
 		margin-bottom: 10px;
-		
+	}
+	.tag{
+		align-items: center;
 	}
 	.tag1 {
 		font-size: $font-sm;

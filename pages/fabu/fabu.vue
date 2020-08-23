@@ -4,19 +4,38 @@
 			<uni-steps :options="[{title: '填写任务要求'}, {title: '设置任务详情'}]" :active="0" active-color="#FF5000"></uni-steps>
 		</view>
 
-		<view class="u-box">
-			<view class="form-label">
-				<text class="form-icon cuIcon-filter"></text>
-				<text class="text-left">任务类型：{{cate.pdName}}</text>
+		
+		<view class="form-box">
+			<view class="form-item">
+				<view class="form-label">
+					<view class="form-icon cuIcon-title"></view>
+					<text class="text-left">任务类型</text>
+				</view>
+				<view class="uni-list-cell-db">
+					<picker @change="bindPickerChangeC" :value="dindex" :range="dalei">
+						<view class="uni-input">
+							{{dalei[dindex]}}
+							<!-- <text v-if="goldindex==null">选择类型</text> -->
+						</view>
+					</picker>
+				</view>
+				<view>
+					<uni-icons type="forward" size="18" color="#888"></uni-icons>
+				</view>
 			</view>
-			<view class="form-label">
+			<view v-if="detail.typeid!=14">
+				
 				<radio-group @change="radioChange">
-					<label class="ss" v-for="(item, index) in cate.pdPrice" :key="item.value">
-						<radio color="#FF5000" :value="item.value" :checked="index === current" /> {{item.name}}
+					<label class="ss" v-for="(item, index) in zilei" :key="item.typeid">
+						<radio color="#FF5000" :value="tostr(index)" :checked="index === current" /> {{item.name}}
 					</label>
 				</radio-group>
 			</view>
-		</view>
+			<view v-else>
+				<input class="uni-input title" name="input" v-model="title" placeholder="请填写任务名称(12个字符以内容哦)" placeholder-class="placeholderstyle1"
+				  @input="diytitle" />
+			</view>
+	</view>
 
 		<view class="form-box">
 			<view class="form-item" style="padding-right: 20px;">
@@ -66,8 +85,26 @@
 			</view>
 
 		</view>
+		<!--  -->
+		<view class="form-box" v-if="detail.typeid==14">
+				<view class="form-item">
+					<view class="form-label">
+						<view class="form-icon cuIcon-title"></view>
+						<text class="text-left">助力方式</text>
+					</view>
+				</view>
+				<view >
+					
+					<radio-group @change="zlfs">
+						<label class="ss" v-for="(item, index) in zhuli" :key="index">
+							<radio color="#FF5000" :value="tostr(index)" :checked="index === zhuindex" /> {{item}}
+						</label>
+					</radio-group>
+				</view>
+				
+		</view>
 		<!-- " -->
-		<button @click="nextstep()" hover-class="none">下一步</button>
+		<button @click="nextstep()" hover-class="none" class="fixed-btn-next">下一步</button>
 
 
 
@@ -95,77 +132,125 @@
 				],
 				goldindex: null,
 				tarray: ['30分钟', '1小时', '6小时', '1天', '2天', '3天'],
-				categoryList: [{
-						"id": "3",
-						"pdName": "拼夕夕",
-						"pdPrice": [{
-								value: '1',
-								name: '拼夕夕砍价任务',
-
-							},
-							{
-								value: '2',
-								name: '拼夕夕领现金任务'
-							}
-						]
-					},
-					{
-						"id": "7",
-						"pdName": "淘宝",
-						"pdPrice": [{
-								value: '1',
-								name: '淘宝口令任务',
-
-							}
-
-						]
-					},
-					{
-						"id": "9",
-						"pdName": "快手",
-						"pdPrice": [{
-								value: '1',
-								name: '快手口令任务',
-
-							}
-
-						]
-					}
-				],
+				zhuli:['网址助力任务','二维码助力任务','自定义口令任务'],
+				zhuindex:0,
+				categoryList: null,
+				dalei:[],
+				zilei:[],
+				dindex:0,
+				zindex:0,
 				tindex: null,
 				danshu: null,
+				title:null,
 				detail: {
 					gold: null,
 					timex: null,
 					danshu: null,
 					typeid: null,
-					subclassid: null
+					subclassid: null,
+					typeinfo:'',
+					subclassinfo:'',
+					zdy:null
 				},
 				items: [],
 				current: 0,
+				
 				currCateIndex: 1
 			}
 		},
-		onLoad:function(){
-			this.cate = this.categoryList[this.currCateIndex]
-			console.log(this.cate)
+		onShow:function(event){
+			
+			var that =  this;
+			let category = {}
+			var url = this.$Api('category');
+			uni.request({
+				url:url,
+				success: (res) => {
+					console.log(res.data.categories)
+					var data = res.data.categories
+					that.categoryList = data
+					const type = data.map(x => {
+						return x.name
+					});
+					
+					that.dalei = type
+					console.log(that.dalei)
+					
+					let a = that.categoryList[0]['subclass']
+					console.log(a)
+					that.zilei = a
+					that.detail.subclassid = a[0].typeid
+					that.detail.typeid = 1
+				}
+			})
+			
 		},
 		computed: {
 
 		},
 		methods: {
+			tostr(item){
+			      return item.toString();
+			 },
+			bindPickerChangeC:function(e) {
+				this.dindex = e.target.value
+				this.detail.typeid = this.categoryList[e.target.value]['typeid']
+				console.log(this.categoryList[e.target.value]['typeid'])
+				if(this.detail.typeid != 14)
+				 {
+					let a = this.categoryList[e.target.value]['subclass']
+					this.zilei = a
+					this.detail.subclassid = a[0].typeid
+					this.detail.zdy = null
+				 }else{
+					 
+					 this.detail.zdy = 0
+				 }
+				
+				
+				
+
+			},
 			bindPickerChangeG: function(e) {
 				this.goldindex = e.target.value
-				this.detail.gold = this.goldarray[e.target.value]
+				let godnum = this.goldarray[e.target.value]
+				this.detail.gold = godnum.replace("金币/单","");
 
 			},
 			bindPickerChangeT: function(e) {
 				this.tindex = e.target.value
-				this.detail.timex = this.tarray[e.target.value]
+				let t = this.tarray[e.target.value]
+				//['30分钟', '1小时', '6小时', '1天', '2天', '3天'],
+				let text = 0
+				switch (e.target.value) {
+				    case 0:
+				        text = 1800;
+				        break; 
+				    case 1:
+				        text = 3600;
+				        break;
+					case 2:
+					    text = 3600*6;
+					    break; 
+					case 3:
+					    text = 3600*24;
+					    break; 
+					case 4:
+					    text = 3600*48;
+					    break;
+					case 5:
+					    text = 3600*72;
+					    break; 
+				   
+				} 
+				this.detail.timex = text
 			},
 			getdanshu: function(event) {
 				this.detail.danshu = event.target.value
 				console.log(this.danshu)
+			},
+			diytitle: function(event) {
+				this.detail.typeinfo = event.target.value
 			},
 			nextstep: function() {
 
@@ -183,22 +268,42 @@
 					this.$queue.showToast('请选择任务有效时间');
 					return false;
 				}
+				if(this.detail.typeid!=14){
+					this.detail.typeinfo = this.categoryList[this.dindex]['name']
+					this.detail.subclassinfo= this.categoryList[this.dindex]['subclass'][this.zindex]['name']
+				}else{
+					
+				}
+				
 
+				
 				let url = "?srcData=" + encodeURIComponent(JSON.stringify(this.detail))
+				let redirectrUrl = '';
+				if(this.detail.zdy==null){
+					redirectrUrl = '/pages/fabu/fabu2'+url;
+				}
+				if(this.detail.zdy==0){
+					redirectrUrl = '/pages/fabu/zdy1'+url;
+				}
+				if(this.detail.zdy==1){
+					redirectrUrl = '/pages/fabu/zdy2'+url;
+				}
+				if(this.detail.zdy==2){
+					redirectrUrl = '/pages/fabu/zdy3'+url;
+				}
+				console.log(redirectrUrl)
 				uni.navigateTo({
-					url: '/pages/fabu/fabu2' + url
+					url: redirectrUrl
 				})
 
 			},
 			radioChange: function(evt) {
-				console.log(evt)
-				for (let i = 0; i < this.items.length; i++) {
-					if (this.items[i].value === evt.target.value) {
-						this.current = i;
-						console.log(this.items[i].value)
-						break;
-					}
-				}
+				this.zindex = evt.target.value
+				this.detail.subclassid = this.categoryList[this.dindex]['subclass'][this.zindex].typeid
+				
+			},
+			zlfs: function(evt) {
+				this.detail.zdy = evt.target.value
 			}
 		}
 	}
@@ -246,6 +351,7 @@
 		padding: 10px 0;
 		border-bottom: 1px solid #F2F3F6;
 	}
+	
 
 	.form-item:last-child {
 		border: none
@@ -256,7 +362,12 @@
 		color: #666;
 		text-align: right;
 	}
-
+.placeholderstyle1 {
+		font-size: 28upx;
+		color: #666;
+		text-align: left;
+	}
+	
 	.uni-list-cell-db {
 		text-align: right;
 		width: 60%;
@@ -292,6 +403,9 @@
 		left: 5%;
 		background-color: #FF5000;
 		box-shadow: 0 0 16upx rgba(255, 80, 0, .3);
+	}
+	.fixed-btn-next{
+		
 	}
 
 	.btnactive {
@@ -351,5 +465,14 @@
 	.uni-picker-action-confirm {
 		float: right;
 		color: #FF5000;
+	}
+	.title{
+		text-align: left;
+		padding-left: 15upx;
+	}
+	
+	.uni-picker-container .uni-picker-action.uni-picker-action-confirm {
+	    float: right;
+	    color: #FF5000!important;
 	}
 </style>

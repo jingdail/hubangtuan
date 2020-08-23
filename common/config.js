@@ -1,6 +1,7 @@
 // const ROOTPATH = "https://www.gomyorder.cn";
 const Base = "https://app.wolewan.com/";
 module.exports = {
+	base:Base,
 	list: Base + 'api/lists/',
 	category: Base + 'json/categories.json',
 	publish: Base + "api/publish",
@@ -9,7 +10,9 @@ module.exports = {
 	mobile: Base + "api/mobile",
 	jinbi: Base + "api/jinbi",
 	logon: Base + "logon",
-	daka: Base + 'daka',
+	daka: Base + 'my/daka',
 	my: Base + 'my',
-	myinfo: Base + 'my/myinfo/'
+	myinfo: Base + 'my/myinfo/',
+	info:Base+'api/infos/',
+	baoming:Base+'api/done'
 };

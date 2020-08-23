@@ -7,7 +7,7 @@
 			<view class="header">
 				<view class="username" >
 					<view class="name">{{username}}</view>
-					<view class="vip">钉耙: {{xdpNum}}</view>
+					<view class="vip">金币: {{xdpNum}}</view>
 				</view>
 				<view class="qiandao" @click="qian()">
 					<view class="">{{qiandao}}</view>
@@ -93,7 +93,8 @@
 			}
 			var that = this;
 			this.$http.get(this.$Api('my'),{},{isFactory: false})
-			.then(function (response) {				
+			.then(function (response) {		
+				console.log(response)
 				that.xdpNum = response.data.data.jinbi
 			}).catch(function (error) {
 			    //这里只会在接口是失败状态返回，不需要去处理错误提示
@@ -125,7 +126,7 @@
 					//添加金币,请求接口
 					this.$http.post(this.$Api('daka'),{},{isFactory: false})
 					.then(function (response) {				
-						
+						console.log(response)
 					}).catch(function (error) {
 					    //这里只会在接口是失败状态返回，不需要去处理错误提示
 					    console.log(error);
@@ -170,7 +171,9 @@
 
     }
 </script>
+
 <style lang='scss'>
+	@import '/colorui/icon.css';
 	page{
 		--page-color-base:'#f2f2f2';
 		background: $page-color-base;	
@@ -237,11 +240,12 @@
 	.qiandao{
 		float: right;
 		border: 0.5px solid #FF5000;
+		background-color: rgba($color: #FF5000, $alpha: .7);
 		padding: 3px;
 		border-radius: 100px;
 		font-size: 24upx;
 		padding: 3px 10px;
-		color: #282828;
+		color: #fff;
 	}
 	.yaoqing view{
 		margin-right: 10px;
