@@ -12,7 +12,12 @@ module.exports = {
 	logon: Base + "logon",
 	daka: Base + 'my/daka',
 	my: Base + 'my',
+<<<<<<< HEAD
 	myinfo: Base + 'my/myinfo/',
 	info:Base+'api/infos/',
 	baoming:Base+'api/done'
+=======
+	myinfo: Base + 'my/myinfo/',
+	cate:'https://app.wolewan.com/json/categories.json'
+>>>>>>> cd542449e6d9d8814a804a223e7053f6853e478b
 };
