@@ -5,7 +5,14 @@
 				任务步骤<text>(请参照以下步骤完成任务)</text></view>
 			<view class="renwu-step">
 			 
-			 <text>1.</text> 任务步骤1！</view>
+			 <text>1.</text> 
+			 <block v-if="content">
+				 {{content}}
+				 </block>
+				 <block>
+				  任务步骤1！
+				</block>
+			 </view>
 			<view class="content">{{content}}</view>
 			<view class="btn-box">
 				<view class="send-wx" @tap="copyLink()">复制链接/口令</view>
@@ -52,11 +59,23 @@
 			yzt: {
 				type: [String],
 				default: ''
+			},
+			step1: {
+				type: [String],
+				default: ''
+			},
+			step2: {
+				type: [String],
+				default: ''
+			},
+			qrimg: {
+				type: [String],
+				default: ''
 			}
 		},
 		data() {
 			return {
-				pic: 'https://app.wolewan.com/uploads/20200822/dd17ab4063842168e75ab65c81bd781f.jpeg'
+				pic: 'https://api.hubangtuan.cn/uploads/20200822/dd17ab4063842168e75ab65c81bd781f.jpeg'
 			};
 		},
 		methods: {
@@ -86,12 +105,17 @@
 							url: that.$Api('uploadpic'),
 							filePath: res.tempFilePaths[0],
 							name: 'file',
+							formData:{
+								"token":"99d4caeb17a66ba89d9904b321ca27e1"
+							},
 							formData: {
 								'user': 'test'
 							},
 							success: function(uploadFileRes) {
+								console.log('uploads:')
+								console.log(uploadFileRes);
 								uni.hideLoading()
-								let img = "https://app.wolewan.com/uploads" + uploadFileRes.data
+								let img = "https://api.hubangtuan.cn/uploads/" + uploadFileRes.data
 								that.pic = img
 								that.$emit('uploadpic', img)
 								// that.pic=that.$Api('base')+"uploads/"+uploadFileRes.data
@@ -118,7 +142,7 @@
 					provider: "weixin",
 					scene: "WXSceneSession",
 					type: 1,
-					summary: "我正在使用HBuilderX开发uni-app，赶紧跟我一起来体验！",
+					summary: "互帮团是一款集互助砍价和自由发布任务的平台",
 					success: function(res) {
 						console.log("success:" + JSON.stringify(res));
 					},
@@ -229,10 +253,7 @@
 		border: 1px solid #FF5000;
 		border-radius: 10upx;
 		width: 45%;
-	}
-
-	.yanzhengtu-box .item image {
-		border-radius: 10upx;
+		overflow: hidden;
 	}
 	
 	.hbt-upload {

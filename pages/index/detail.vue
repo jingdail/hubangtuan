@@ -27,10 +27,14 @@
 		<view class="tip-box">
 			注意！所有加QQ、微信、淘宝刷单、拆红包比中，全是骗子！勿贪便宜！不要付款！
 		</view>
-
-		<SCANCODE :content="detail.content" @uploadpic="uploadpic" slt="../../static/y.jpeg"
-		 yzt=""></SCANCODE>
-
+         <block v-if="detail.typeid!=14 || detail.qrcode==null">
+		<PDD :content="detail.content" @uploadpic="uploadpic" :slt="detail.pic"
+		 yzt="" :step2="detail.picinfo" :qrimg="detail.qrcode"></PDD>
+		 </block>
+			 <block v-else>
+		 <SCANCODE :content="detail.content" @uploadpic="uploadpic" :slt="detail.pic"
+		  yzt="" :step2="detail.picinfo" :qrimg="detail.qrcode"></SCANCODE>
+</block>
 		<view class="yz-btn">
 			<view class="renwuSubmit" @click="renwuSubmit()">提交验证</view>
 		</view>
@@ -53,7 +57,8 @@
 				id: 0,
 				detail: [],
 				pic: '',
-				isbaoming: 1
+				isbaoming: 1,
+				picinfo:""
 			}
 		},
 		

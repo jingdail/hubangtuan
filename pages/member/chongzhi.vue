@@ -115,7 +115,15 @@
 				
 			    uni.requestPayment({
 			        provider: this.payProvider,
-			        orderInfo: orderInfo.data,
+			        orderInfo:{
+						appid:orderInfo.data.appid,
+						noncestr:orderInfo.data.noncestr,
+						package:orderInfo.data.package,
+						partnerid:orderInfo.data.partnerid,
+						prepayid:orderInfo.data.prepayid,
+						timestamp:orderInfo.data.timestamp,
+						sign:orderInfo.data.sign
+					},
 			        success: (e) => {
 			            console.log("success", e);
 						//支付成功
@@ -140,7 +148,7 @@
 			    // #ifdef APP-PLUS
 			    appid = plus.runtime.appid;
 			    // #endif
-				let url = 'http://app.huichi-china.com/pay/Alipayapp?payid=' + e + '&appid=' + appid + '&total=0.1';
+				let url = this.$Api('pay')+'?payid=' + e + '&appid=' + appid + '&total='+this.confimPrice;
 			    return new Promise((res) => {
 			        uni.request({
 			            url: url,
@@ -191,11 +199,11 @@
 	.btn {
 		background-color: #FF5000;
 		color: #fff;
-		width: 98%;
-		padding: 10px;
+		width: 100%;
+		padding: 15px;
 		text-align: center;
-		border-radius: 20px;
-		margin: 40upx auto 0 auto;
+		/* border-radius: 20px; */
+		margin: 60upx auto 0 auto;
 		box-shadow: 0 0 10upx rgba(255, 80, 0, 0.3);
 	}
 

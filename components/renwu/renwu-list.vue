@@ -1,22 +1,29 @@
 <!-- 商品列表组件 <pd-list :list="xx"></pd-list> -->
 <template>
 	<view>
-		<view class="renwu"  v-for="(item,index) in list" :key="index" @tap="ToDetail(item)">
+		<!-- @tap="ToDetail(item) -->
+		<view class="renwu"  v-for="(item,index) in list" :key="index">
 			<view class="logo">
 				<image :src="item.avatarurl" mode=""></image>
 			</view>
 			<view class="content">
 				<view class="header">
 					<view class="title">
-					{{item.title}}
+					
+					{{item.nickname}}
 					
 					</view>
+					
+				</view>
+				<view class="renwu-item">
+					<view class="">{{item.title}}</view>
+					<view class="">{{item.price}}</view>
 					<view class="done-num">{{item.done_num}}/{{item.num}}</view>
 				</view>
 				<view class="action-box">
-					<view class="btn" @click="actionMenu(1)">关闭任务</view>
+					<view class="btn" @click="closeRenwu(1,item.id)">关闭任务</view>
 					<view class="btn" @click="actionMenu(2)">置顶推荐</view>
-					<view class="btn" @click="actionMenu(3)">去审核</view>
+					<view class="btn" @click="goShenhe(item.id)">去审核</view>
 				</view>
 			</view>
 		</view>
@@ -38,10 +45,17 @@
 			console.log(this.list)
 		},
 		methods: {
-			actionMenu(e){
-				console.log(e)
-				uni.showToast({
-					title: ''+e+''
+			closeRenwu(e,id){
+				uni.request({
+					url:'https://api.hubangtuan.cn/my/infoclose/close/1/id/'+id,
+					success:function(result){
+						console.log(result)
+					}
+				})
+			},
+			goShenhe(id){
+				uni.navigateTo({
+					url:'/pages/member/shenheList?id='+id
 				})
 			},
 			ToDetail(e) {				
@@ -55,7 +69,12 @@
 </script>
 
 <style lang="scss">
-	
+	.renwu-item{
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin: 50upx 0; 
+	}
 	.renwu{
 		position: relative;
 		background-color: #fff;
@@ -81,7 +100,8 @@
 		height: 50upx;
 	}
 	.header{
-		min-height: 200upx;				
+		// min-height: 200upx;		
+		font-weight: bold;
 	}
 	.action-box,.header{
 		display: flex;

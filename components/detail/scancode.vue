@@ -5,10 +5,10 @@
 				任务步骤<text>(请参照以下步骤完成任务)</text></view>
 			<view class="renwu-step">
 
-				<text>1.</text> 任务步骤1！</view>
+				<text>1.</text> {{content}}</view>
 			<view class="qrcode-container">
 				<view class="pic">
-					<image src="../../static/alipay.png" mode=""></image>
+					<image :src="qrimg" mode=""></image>
 				</view>
 				<view class="btn">
 					<view class="" @tap="sendWechat()">
@@ -25,7 +25,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="renwu-step"><text>2.</text>任务步骤2。</view>
+			<view class="renwu-step"><text>2.</text>{{step2}}</view>
 			<view class="yanzhengtu-box">
 				<view class="item">
 					<view class="shiliimg">
@@ -64,6 +64,18 @@
 				default: ''
 			},
 			yzt: {
+				type: [String],
+				default: ''
+			},
+			step1: {
+				type: [String],
+				default: ''
+			},
+			step2: {
+				type: [String],
+				default: ''
+			},
+			qrimg: {
 				type: [String],
 				default: ''
 			}

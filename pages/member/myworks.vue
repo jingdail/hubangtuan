@@ -54,7 +54,7 @@
 			upCallback(page) {
 				let pageNum = page.num; // 页码, 默认从1开始
 				let pageSize = page.size; // 页长, 默认每页10条
-				var url = this.$Api('list')+'page/'+pageNum+'/cate/'+this.cateid;
+				var url = this.$Api('myworks')+'/page/'+pageNum;
 				var that = this;
 				this.$http.get(url,{pid:0},{isFactory: false}).then(function (res) {
 					// 接口返回的当前页数据列表 (数组)

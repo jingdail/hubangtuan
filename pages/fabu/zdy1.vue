@@ -114,6 +114,7 @@
 				})
 			},			
 			submitRenwu(){
+				console.log('开始提交')
 				
 				if(this.detail.zdy_field_1.length<=0){
 					this.$queue.showToast("请填写任务详情");
@@ -137,8 +138,8 @@
 				param.valid_date = detail.timex
 				param.price = detail.gold
 				param.subclassid = detail.subclassid
-				console.log(param)
-				/*
+				// console.log(param)
+				
 				this.$http.post(this.$Api('publish'),param,{isFactory: false})
 				.then(function (response) {
 					console.log(response)
@@ -166,7 +167,7 @@
 				    //这里只会在接口是失败状态返回，不需要去处理错误提示
 				    console.log(error);
 				});
-				*/
+				
 				// this.$queue.showToast('发布成功');
 			}
 	    }

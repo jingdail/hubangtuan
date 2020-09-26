@@ -4,7 +4,7 @@
         {
             "path" : "pages/index/index",
             "style" : {
-                "navigationBarTitleText" : "小钉耙",
+                "navigationBarTitleText" : "互帮团",
                 "navigationStyle" : "custom",
                 "app-plus" : {
                     "bounce" : "none"
@@ -57,6 +57,13 @@
                 "navigationBarBackgroundColor" : "#FFFFFF"
             }
         },
+		{
+		    "path" : "pages/member/shenheList",
+		    "style" : {
+		        "navigationBarTitleText" : "任务审核",
+		        "navigationBarBackgroundColor" : "#FFFFFF"
+		    }
+		},
         {
             "path" : "pages/member/renwu",
             "style" : {
@@ -283,18 +290,8 @@
                 "navigationBarTitleText" : "系统公告",
                 "navigationBarBackgroundColor" : "#fff"
             }
-        },
-        {
-            "path" : "pages/pub/chooseClass",
-            "style" : {
-                "navigationBarTitleText" : "发布",
-                "navigationBarBackgroundColor" : "#fff"
-            }
-        },
-        {
-            "path" : "App",
-            "style" : {}
         }
+        
     ],
     "tabBar" : {
         "color" : "#666",
@@ -310,7 +307,7 @@
             },
             {
                 "pagePath" : "pages/shop/shop",
-                "text" : "商城",
+                "text" : "免单",
                 "iconPath" : "static/shop.png",
                 "selectedIconPath" : "static/shop1.png"
             },

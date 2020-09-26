@@ -91,7 +91,7 @@
 						uni.showLoading({
 							title:'上传中'
 						})
-						
+						that.Temp_yanzhengtu=res.tempFilePaths[0];
 				        const uploadTask = uni.uploadFile({
 				              url : that.$Api('uploadpic'),
 				              filePath: res.tempFilePaths[0],
@@ -101,7 +101,7 @@
 				              },
 				              success: function (uploadFileRes) {
 								uni.hideLoading()
-								this.Team_yanzhengtu=that.$Api('base')+"uploads/"+uploadFileRes.data
+								that.Team_yanzhengtu=that.$Api('base')+"uploads/"+uploadFileRes.data
 								 
 				              }
 				             });
@@ -120,7 +120,7 @@
 					this.$queue.showToast("请填写任务详情");
 					return false;
 				}
-				if(this.detail.yanzhengtu==null || this.detail.yanzhengtu==''){
+				if(this.Temp_yanzhengtu==null || this.Temp_yanzhengtu==''){
 					this.$queue.showToast("请添加验证示例图片");
 					return false;
 				}
@@ -139,7 +139,7 @@
 				param.price = detail.gold
 				param.subclassid = detail.subclassid
 				console.log(param)
-				/*
+				
 				this.$http.post(this.$Api('publish'),param,{isFactory: false})
 				.then(function (response) {
 					console.log(response)
@@ -167,7 +167,7 @@
 				    //这里只会在接口是失败状态返回，不需要去处理错误提示
 				    console.log(error);
 				});
-				*/
+				
 				// this.$queue.showToast('发布成功');
 			}
 	    }

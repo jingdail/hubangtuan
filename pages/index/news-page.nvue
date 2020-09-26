@@ -105,9 +105,10 @@
 				console.log(this.requestParams)
 				uni.request({
 					// url: this.$host + 'api/news',
-					url: 'https://app.wolewan.com/api/lists',
+					url: 'https://api.hubangtuan.cn/index/lists',
 					data: this.requestParams,
 					success: (result) => {
+						console.log(result)
 						var endTime = new Date();
 						console.log("request time " + new Date(endTime - startTime).getTime());
 						const data = result.data.data;
@@ -146,10 +147,12 @@
 				});
 			},
 			loadMore(e) {
+				console.log('下一也')
 				this.loadData();
 			},
 			clear() {
-				this.dataList.length = 0;
+				// 2020
+				// this.dataList.length = 0;
 				this.requestParams.page = 0;
 			},
 			goDetail(detail) {

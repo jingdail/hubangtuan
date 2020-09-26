@@ -183,7 +183,7 @@
 				param.price = detail.gold
 				param.subclassid = detail.subclassid
 				console.log(param)
-				/*
+				
 				this.$http.post(this.$Api('publish'),param,{isFactory: false})
 				.then(function (response) {
 					console.log(response)
@@ -211,7 +211,7 @@
 				    //这里只会在接口是失败状态返回，不需要去处理错误提示
 				    console.log(error);
 				});
-				*/
+				
 				// this.$queue.showToast('发布成功');
 			}
 	    }

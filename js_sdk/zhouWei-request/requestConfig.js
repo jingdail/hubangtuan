@@ -81,7 +81,7 @@ $http.requestStart = function(options) {
 	if(token == undefined ||  token == ''){
 		console.log('没有登录')
 	}*/
-	options.header['token'] = uni.getStorageSync('token') || 'e5974e68a6586b197e2be4ef9d201a40';
+	options.header['token'] = "99d4caeb17a66ba89d9904b321ca27e1";
 	return options;
 }
 //请求结束

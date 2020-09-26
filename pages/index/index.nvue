@@ -37,9 +37,9 @@
 	import newsPage from './news-page.nvue';
 
 	// 缓存每页最多
-	const MAX_CACHE_DATA = 100;
+	const MAX_CACHE_DATA = 0;
 	// 缓存页签数量
-	const MAX_CACHE_PAGE = 3;
+	const MAX_CACHE_PAGE = 0;
 	const TAB_PRELOAD_OFFSET = 1;
 
 	export default {
@@ -242,12 +242,12 @@
 				}
 
 				// 缓存 tabId
-				if (this.pageList[this.tabIndex].dataList.length > MAX_CACHE_DATA) {
-					let isExist = this.cacheTab.indexOf(this.tabIndex);
-					if (isExist < 0) {
-						this.cacheTab.push(this.tabIndex);
-					}
-				}
+				// if (this.pageList[this.tabIndex].dataList.length > MAX_CACHE_DATA) {
+				// 	let isExist = this.cacheTab.indexOf(this.tabIndex);
+				// 	if (isExist < 0) {
+				// 		this.cacheTab.push(this.tabIndex);
+				// 	}
+				// }
 
 				this.tabIndex = index;
 

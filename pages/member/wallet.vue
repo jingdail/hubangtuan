@@ -8,7 +8,7 @@
 					<view class="btn" @click="tixian()">可提现0.0元</view>
 				</view>
 				<view class="goldNum">
-					<text class="jinbi">25</text>
+					<text class="jinbi">{{today_jinbu}}</text>
 					<view class="span">今日金币(个)</view>
 					<view class="btn" @click="chongzhi()">立即充值</view>
 				</view>
@@ -25,7 +25,7 @@
 				</view>
 				<view class="gold">
 					<image src="../../static/money_icon_gold.png" mode=""></image>
-					+{{item.jbnum}}
+					<view style="width: 120upx;">{{item.jbnum}}</view>
 					</view>
 			</view>
 			
@@ -99,7 +99,7 @@
 	}
 	.mingxiList .item{padding: 10px;}
 	.mingxiList text{
-		font-size: 10px;
+		font-size: 32upx;
 		color: #282828;
 	}
 	.mingxiList .date{
@@ -175,11 +175,13 @@
 				let pageNum = page.num; // 页码, 默认从1开始
 				let pageSize = page.size; // 页长, 默认每页10条
 				var url = this.$Api('jinbi')+'/page/'+pageNum;
+				
 				var that = this;
 				this.$http.get(url,{},{isFactory: false}).then(function (res) {
 					// 接口返回的当前页数据列表 (数组)
 					console.log(res)
 					let curPageData = res.data.data
+					that.today_jinbu = res.data.jibi_day_num
 					console.log(res)
 					// 接口返回的当前页数据长度 (如列表有26个数据,当前页返回8个,则curPageLen=8)
 					let curPageLen = curPageData.length; 

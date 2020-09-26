@@ -76,14 +76,12 @@
 				this.username = userInfo
 				console.log('userinfo+'+userInfo)
 			})*/
-			/*
+			
 			let userinfo = this.checkLogin('/pages/member/user',1)	
 			console.log(userinfo);
 			this.username = userinfo[0]			
 			this.avatarUrl = userinfo[1]
-			*/
-		   this.username = "zhang"
-		   this.avatarUrl = "http://thirdwx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEJzgueBUDbItZ7NPZbU0WJ8NEKsD5q3LpwfI2jibdHCzpnh3bURV3icETSHJ6oGyLbGFpbFDPHJm6Eg/132"
+			
 			// 签到
 			var currentTime = this.$queue.getCurrentDate(1) //当前日期
 			if(currentTime==uni.getStorageSync('qianTime')){

@@ -162,7 +162,8 @@
 			
 			var that =  this;
 			let category = {}
-			var url = this.$Api('category');
+			// var url = this.$Api('category');
+			var url = "http://app.wolewan.com/json/categories.json";
 			uni.request({
 				url:url,
 				success: (res) => {
