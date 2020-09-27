@@ -21,8 +21,8 @@
 						</view>						
 					</view>
 					
-					<view class="action-box" style="margin: 0 10px;background-color: #fff;">
-						<view class="btn" @click="closeRenwu(1,item.id)">{{info}}</view>
+					<view class="action-box" style="margin: 0 10px;background-color: #fff;padding: 10px;">
+						<view class="btn" @click="closeRenwu(1,item.id)">关闭任务</view>
 						<view class="btn" @click="setTop(2)">置顶推荐</view>
 						<view class="btn" @click="goShenhe(item.id)">去审核</view>
 					</view>
@@ -174,9 +174,10 @@
 		background-color: #fff;
 		border-radius: 3px;
 		padding: 25upx;
-		margin-bottom: 8px;
+		/* margin-bottom: 8px; */
 		// border-bottom: 0.5upx solid $uni-line-color;
 		margin: 10px;
+		margin-bottom: 0;
 		position: relative;
 	}
 	.action-box,.header{

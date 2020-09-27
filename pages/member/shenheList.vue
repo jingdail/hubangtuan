@@ -3,9 +3,15 @@
 		
 		
 		<!-- top="xxx"下拉布局往下偏移,防止被悬浮菜单遮住 -->
-		 <mescroll-body ref="mescrollRef" @init="mescrollInit" top="120" @down="downCallback" :up="upOption" :top="80" @up="upCallback" @emptyclick="emptyClick">
+		 <mescroll-body ref="mescrollRef" @init="mescrollInit" top="0" @down="downCallback" :up="upOption" :top="10" @up="upCallback" @emptyclick="emptyClick">
 			<!-- 数据列表 --> 
-			<good-list :list="dataList"></good-list>
+<!-- 			<good-list :list="dataList"></good-list>-->			
+			<view class="shenhe">
+				<view class="item"  v-for="(item,index) in dataList" :key="index">
+					<image :src="item.pic" mode="" @click="previewImage(item.pic)"></image>
+					<!-- <view class="">{{item.nickname}}</view> -->
+				</view>
+			</view>
 		</mescroll-body>
 	</view>
 </template>
@@ -75,31 +81,35 @@
 					title:'点击了按钮,具体逻辑自行实现'
 				})
 			},
-			
-			// 切换菜单
-			tabChange(e) {			
-				this.cateid = this.tabs[e].typeid
-				this.dataList = []// 先置空列表,显示加载进度
-				this.mescroll.resetUpScroll() // 再刷新列表数据
+			previewImage: function(image) {
+				uni.previewImage({
+					urls: [image],
+					current: 0
+				})
 			}
+			
 		}
 	}
 </script>
 
 <style>
-	.top-warp{
-		z-index: 9990;
-		position: fixed;
-		top: --window-top; /* css变量 */
-		left: 0;
-		width: 100%;
-		height: 80upx;
-		background-color: white;
+	.shenhe{
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		flex-wrap: wrap;
 	}
-	.top-warp .tip{
-		font-size: 28upx;
-		height: 60upx;
-		line-height: 60upx;
-		text-align: center;
+	.shenhe .item{
+		width: 50%;
+		height: 450px;
+		display: flex;
+		justify-content: center;
+		
+		
+	}
+	.shenhe image{
+		width: 360upx;
+		height: 400px;
+		margin: 0 auto;
 	}
 </style>
