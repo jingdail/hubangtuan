@@ -21,7 +21,7 @@
 					<view class="done-num">{{item.done_num}}/{{item.num}}</view>
 				</view>
 				<view class="action-box">
-					<view class="btn" @click="closeRenwu(1,item.id)">关闭任务</view>
+					<view class="btn" @click="closeRenwu(1,item.id)">{{info}}</view>
 					<view class="btn" @click="actionMenu(2)">置顶推荐</view>
 					<view class="btn" @click="goShenhe(item.id)">去审核</view>
 				</view>
@@ -41,17 +41,31 @@
 				}
 			}
 		},
+		data(){
+			return {
+				info:"close",
+				
+			}
+		},
 		onLoad(){
 			console.log(this.list)
 		},
+		mounted() {
+			
+		},
 		methods: {
 			closeRenwu(e,id){
-				uni.request({
-					url:'https://api.hubangtuan.cn/my/infoclose/close/1/id/'+id,
-					success:function(result){
-						console.log(result)
-					}
-				})
+				var that = this;
+				var url = 'https://api.hubangtuan.cn/my/infoclose/close/1/id/'+id;
+				this.$http.get(url,{},{isFactory: false}).then(function (res) {
+					console.log("成功");		
+								that.info="closed"
+				}).catch(function (error) {
+				    
+				    console.log(error);
+					
+				});
+				
 			},
 			goShenhe(id){
 				uni.navigateTo({
