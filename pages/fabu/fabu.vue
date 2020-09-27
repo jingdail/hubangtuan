@@ -185,7 +185,14 @@
 				}
 			})
 			
-		},
+			this.$http.get(this.$Api('my'),{},{isFactory: false})
+			.then(function (response) {					
+				that.jinbi = response.data.data.jinbi
+			}).catch(function (error) {				    
+			    console.log(error);
+			});
+			
+		},		
 		computed: {
 
 		},
@@ -213,10 +220,29 @@
 
 			},
 			bindPickerChangeG: function(e) {
+				var that = this;
 				this.goldindex = e.target.value
 				let godnum = this.goldarray[e.target.value]
 				this.detail.gold = godnum.replace("金币/单","");
-
+				console.log(this.detail.gold);
+			},
+			getJinbiNum(){
+				var xuyaojinbu = this.detail.danshu*this.detail.gold	
+				if(xuyaojinbu>10){
+					uni.showModal({
+						title: '金币不足',
+						content: '',
+						confirmText:"前去充值",
+						success: function (res) {						
+							if (res.confirm) {
+								uni.navigateTo({url:'/pages/member/chongzhi'});
+								
+							} else if (res.cancel) {
+								console.log('用户点击取消');
+							}
+						}
+					});
+				}
 			},
 			bindPickerChangeT: function(e) {
 				this.tindex = e.target.value
@@ -247,23 +273,26 @@
 				this.detail.timex = text
 			},
 			getdanshu: function(event) {
-				this.detail.danshu = event.target.value
-				console.log(this.danshu)
+				this.detail.danshu = event.target.value				
 			},
 			diytitle: function(event) {
 				this.detail.typeinfo = event.target.value
 			},
 			nextstep: function() {
-
+				
 
 				if (this.danshu == null || this.danshu < 10) {
 					this.$queue.showToast('任务单数必须大于10');
+					return false;
 				}
 				if (this.goldindex == null) {
 					console.log('请选择为每人支付多少金币');
 					this.$queue.showToast('请选择支付多少金币');
 					return false;
 				}
+				//是否足够
+				this.getJinbiNum();
+				
 				if (this.tindex == null) {
 					console.log('请选择任务有效时间');
 					this.$queue.showToast('请选择任务有效时间');

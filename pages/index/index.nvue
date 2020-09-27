@@ -109,6 +109,7 @@
 				isTap: false
 			}
 		},
+		
 		onReady() {
 			this._lastTabIndex = 0;
 			this.swiperWidth = 0;

@@ -30,19 +30,14 @@
 				dataList: [], //列表数据
 				tabs: ['全部', '待提交', '审核中','未通过','已完成'],
 				tabIndex: 0 ,// tab下标
-				cateid:0//当前分类ID
+				cateid:0,//当前分类ID,
+				id:0
 			}
 		},
-		onReady() {
-			uni.showTabBarRedDot({
-				index:3,
-				success() {					
-				},
-				fail() {
-					console.log('blue')
-				}
-			})
-		},
+		onLoad(option){
+			this.id = option.id
+			console.log(this.id);
+		},		
 		methods: { 
 			/*上拉加载的回调: 其中page.num:当前页 从1开始, page.size:每页数据条数,默认10 */
 			downCallback(){
@@ -51,9 +46,9 @@
 			upCallback(page) {
 				let pageNum = page.num; // 页码, 默认从1开始
 				let pageSize = page.size; // 页长, 默认每页10条
-				var url = this.$Api('donelist')+'/page/'+pageNum;
+				var url = this.$Api('donelist');
 				var that = this;
-				this.$http.get(url,{pid:0},{isFactory: false}).then(function (res) {
+				this.$http.get(url,{page:pageNum,id:that.id},{isFactory: false}).then(function (res) {
 					// 接口返回的当前页数据列表 (数组)
 					console.log(res)
 					let curPageData = res.data.data

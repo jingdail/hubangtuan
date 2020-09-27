@@ -3,8 +3,7 @@
 		<view class="media-item view">
 			<view class="flex-row">
 				<view class="flex-col">
-					<image class="image-list1" src="http://thirdwx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEJzg
-					ueBUDbItZ7NPZbU0WJ8NEKsD5q3LpwfI2jibdHCzpnh3bURV3icETSHJ6oGyLbGFpbFDPHJm6Eg/132" 
+					<image class="image-list1" :src="detail.avatarurl" 
 					lazy-load=""></image>
 				</view>
 				<view class="flex-row image-section">
@@ -25,18 +24,20 @@
 		</view>
 		<!-- tips -->
 		<view class="tip-box">
-			注意！所有加QQ、微信、淘宝刷单、拆红包比中，全是骗子！勿贪便宜！不要付款！
+			注意！所有加QQ、微信、淘宝刷单、拆红包，全是骗子！勿贪便宜！不要付款！
+			
 		</view>
          <block v-if="detail.typeid!=14 || detail.qrcode==null">
-		<PDD :content="detail.content" @uploadpic="uploadpic" :slt="detail.pic"
-		 yzt="" :step2="detail.picinfo" :qrimg="detail.qrcode"></PDD>
+		<PDD :content="detail.content" @uploadpic="uploadpic" :slt="detail.pic[0]"
+		 yzt="" :step2="detail.picinfo" :qrimg="detail.qrcode" :valid="detail.valid"></PDD>
 		 </block>
 			 <block v-else>
 		 <SCANCODE :content="detail.content" @uploadpic="uploadpic" :slt="detail.pic"
 		  yzt="" :step2="detail.picinfo" :qrimg="detail.qrcode"></SCANCODE>
 </block>
 		<view class="yz-btn">
-			<view class="renwuSubmit" @click="renwuSubmit()">提交验证</view>
+			<view class="renwuSubmit valid" v-if="detail.valid">任务已超有效期</view>
+			<view class="renwuSubmit" @click="renwuSubmit()" v-else>提交验证</view>
 		</view>
 		
 	</view>
@@ -56,9 +57,9 @@
 				content: "",
 				id: 0,
 				detail: [],
-				pic: '',
-				isbaoming: 1,
-				picinfo:""
+				// pic: '',
+				// isbaoming: 1,
+				// picinfo:""
 			}
 		},
 		
@@ -119,7 +120,7 @@
 				}
 				
 				let param = {}
-				param.infoid = this.id
+				param.infoid = this.detail.id
 				param.pic = this.pic
 				this.$http.post(this.$Api('baoming'), param, {
 						isFactory: false
@@ -308,6 +309,10 @@
 		margin-bottom: 10px;
 
 	}
+	.valid{
+		background-color: #282828;
+		color: #fff;
+	}
 
 	.tag {
 		align-items: center;
@@ -316,12 +321,11 @@
 	.tag1 {
 		font-size: 28upx;
 		color: #979797;
-		
 	}
 
 	.tag2 {
 		padding-left: 10upx;
-		font-size: 24upx;
+		font-size: 30upx;
 		color: #FF5000;
 	}
 
