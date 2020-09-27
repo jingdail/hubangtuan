@@ -5,32 +5,28 @@
 				任务步骤<text>(请参照以下步骤完成任务)</text></view>
 			<view class="renwu-step">
 			 
-			 <text>1.</text> 
-			 <block v-if="content">
-				 {{content}}
-				 </block>
-				 <block>
-				  任务步骤1！
-				</block>
+			 <text>1. 任务步骤！</text> 
+			
 			 </view>
 			<view class="content">{{content}}</view>
 			<view class="btn-box">
 				<view class="send-wx" @tap="copyLink()">复制链接/口令</view>
 				<view class="send-wx" @tap="sendAppMsg()">发送给微信好友</view>
 			</view>
-			<view class="renwu-step"><text>2.</text>任务步骤2。</view>
+			<view class="renwu-step"><text>2.</text>任务步骤。</view>
 			<view class="yanzhengtu-box">
 				<view class="item">
 					<view class="shiliimg">
 						<view class="changeImage">示例验证图</view>
-						<image :src="slt" @click="previewShiliImage()" mode="widthFix">
+						<image  :src="slt" @click="previewShiliImage()" mode="widthFix">
+						<!-- <image class="sss" :src="slt[0]" @click="previewShiliImage()" mode="widthFix"> -->
 					</view>
 				</view>
 				<view class="item">
 					
 					<view class=" del-btn-box" v-if="pic">
 						<view class="del-btn" @click="delPic()">删除图片</view>
-						<image :src="pic" @click="previewImage()" mode="widthFix" v-if="pic">
+						<image class="sss" :src="pic" @click="previewImage()" mode="widthFix" v-if="pic">
 					</view>
 					<view class="hbt-upload" v-else>
 						<view class="changeImage1" @click="chose()">
@@ -56,6 +52,10 @@
 				type: [String],
 				default: ''
 			},
+			pic: {
+				type: [String],
+				default: ''
+			},
 			yzt: {
 				type: [String],
 				default: ''
@@ -71,12 +71,14 @@
 			qrimg: {
 				type: [String],
 				default: ''
+			},
+			valid:{
+				type: [String],
+				default: ''
 			}
 		},
 		data() {
-			return {
-				pic: 'https://api.hubangtuan.cn/uploads/20200822/dd17ab4063842168e75ab65c81bd781f.jpeg'
-			};
+			return {}
 		},
 		methods: {
 			copyLink:function(){
@@ -91,6 +93,14 @@
 				this.pic = '';
 			},
 			chose: function() {
+				if(this.valid==1){
+					uni.showToast({
+						title:"任务已超有效期",
+						icon:"none"
+						
+					})
+					return false;
+				}
 				var that = this
 				uni.chooseImage({
 					count: 1, //默认9
@@ -115,8 +125,9 @@
 								console.log('uploads:')
 								console.log(uploadFileRes);
 								uni.hideLoading()
-								let img = "https://api.hubangtuan.cn/uploads/" + uploadFileRes.data
+								let img = "https://api.hubangtuan.cn/uploads" + uploadFileRes.data
 								that.pic = img
+								console.log(that.pic)
 								that.$emit('uploadpic', img)
 								// that.pic=that.$Api('base')+"uploads/"+uploadFileRes.data
 							}
@@ -126,13 +137,13 @@
 			},
 			previewImage: function() {
 				uni.previewImage({
-					urls: [this.pic],
+					urls: [this.slt],
 					current: 0
 				})
 			},
 			previewShiliImage: function() {
 				uni.previewImage({
-					urls: [this.pic],
+					urls: [this.slt],
 					current: 0
 				})
 			},
@@ -163,6 +174,10 @@
 
 
 <style>
+	.sss{
+		width: 320px;
+		height: 400px;
+	}
 	.btn-box{
 		display: flex;
 		justify-content: space-around;
@@ -228,7 +243,7 @@
 		color: #282828;
 	}
 	.renwu-step text{
-		color: #ff5000;
+		color: #282828;
 	}
 
 	.title {

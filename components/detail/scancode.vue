@@ -90,7 +90,7 @@
 			downloadQrcode: function() {
 				var that = this;
 				uni.downloadFile({
-						url: "https://app.wolewan.com/uploads/20200822/dd17ab4063842168e75ab65c81bd781f.jpeg",
+						url: this.qrimg,
 						success: (res) => {
 							if (res.statusCode === 200) {
 								console.log('下载成功');
@@ -124,10 +124,10 @@
 					provider: "weixin",
 					scene: "WXSceneSession",
 					type: 2,
-					href: "http://uniapp.dcloud.io/",
+					href: "https://www.hubangtuan.cn",
 					title: "互帮团",
-					summary: "网赚App",
-					imageUrl: "rr",
+					summary: "互帮团是一款集互助砍价和自由发布任务的平台",
+					imageUrl: this.qrimg,
 					success: function(res) {
 						console.log("success:" + JSON.stringify(res));
 					},
@@ -171,7 +171,8 @@
 							},
 							success: function(uploadFileRes) {
 								uni.hideLoading()
-								let img = "https://app.wolewan.com/uploads" + uploadFileRes.data
+								// let img = "https://app.wolewan.com/uploads" + uploadFileRes.data
+								let img = "https://api.hubangtuan.cn/uploads" + uploadFileRes.data
 								that.pic = img
 								that.$emit('uploadpic', img)
 								// that.pic=that.$Api('base')+"uploads/"+uploadFileRes.data
