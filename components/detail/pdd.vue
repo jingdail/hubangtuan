@@ -18,13 +18,13 @@
 				<view class="item">
 					<view class="shiliimg">
 						<view class="changeImage">示例验证图</view>
-						<image  :src="slt" @click="previewShiliImage()" mode="widthFix">
+						<image  :src="slt"  @click="previewShiliImage()" mode="widthFix">
 						<!-- <image class="sss" :src="slt[0]" @click="previewShiliImage()" mode="widthFix"> -->
 					</view>
 				</view>
 				<view class="item">
 					
-					<view class=" del-btn-box" v-if="pic">
+					<view class="del-btn-box" v-if="pic" style="">
 						<view class="del-btn" @click="delPic()">删除图片</view>
 						<image class="sss" :src="pic" @click="previewImage()" mode="widthFix" v-if="pic">
 					</view>
@@ -51,19 +51,11 @@
 			slt: {
 				type: [String],
 				default: ''
-			},
-			pic: {
-				type: [String],
-				default: ''
-			},
+			},			
 			yzt: {
 				type: [String],
 				default: ''
-			},
-			step1: {
-				type: [String],
-				default: ''
-			},
+			},			
 			step2: {
 				type: [String],
 				default: ''
@@ -73,12 +65,14 @@
 				default: ''
 			},
 			valid:{
-				type: [String],
-				default: ''
+				type: [Number],
+				default: 0
 			}
 		},
 		data() {
-			return {}
+			return {
+				pic:""
+			}
 		},
 		methods: {
 			copyLink:function(){
@@ -203,8 +197,16 @@
 	.detail_box {
 		margin: 0 20upx;
 	}
-
-
+.shiliimg,.del-btn-box{
+	border: 1px solid #FF5000;
+	border-radius: 10upx;
+}
+.del-btn-box{
+	min-height: 200upx;
+}
+.shiliimg image,.del-btn-box image{
+	border-radius: 10upx;
+}
 	.tip-box {
 		border-radius: 10upx;
 		background-color: #FF5000;
@@ -264,11 +266,10 @@
 		margin-bottom: 50px;
 	}
 
-	.yanzhengtu-box .item {
-		border: 1px solid #FF5000;
+	.yanzhengtu-box .item {		
 		border-radius: 10upx;
 		width: 45%;
-		overflow: hidden;
+		/* overflow: hidden; */
 	}
 	
 	.hbt-upload {
@@ -293,6 +294,7 @@
 	
 	.del-btn-box{
 		position: relative;
+		border: 1px solid #0081FF;
 	}
 	.del-btn{
 		position: absolute;
@@ -408,6 +410,7 @@
 		position: relative;
 		justify-content: space-between;
 	}
+	
 
 	.media-item {
 		padding: 30upx 20upx;
