@@ -132,7 +132,7 @@
 				],
 				goldindex: null,
 				tarray: ['30分钟', '1小时', '6小时', '1天', '2天', '3天'],
-				zhuli:['网址助力任务','二维码助力任务','自定义口令任务'],
+				zhuli:['网址助力','二维码助力','自定义口令'],
 				zhuindex:0,
 				categoryList: null,
 				dalei:[],
