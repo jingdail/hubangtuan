@@ -36,7 +36,7 @@
 		
 		<view class="cover-container" style="margin-top: 10px;">
 			<view class="history-section icon">	
-				<list-cell icon="cuIcon-notification" title="邀请码"  tips="JKtdi289" @eventClick="copyHref('JKtdi289')"></list-cell>				
+				<list-cell icon="cuIcon-notification" title="邀请码"  :tips="InvitationCode" @eventClick="copyHref()"></list-cell>				
 				<list-cell icon="cuIcon-pulldown"  title="检查更新"  @eventClick="downApp()" ></list-cell>				
 				<list-cell icon="cuIcon-settingsfill"  title="设置中心" border="" @eventClick="navTo('/pages/member/setting')"></list-cell>
 			</view>
@@ -48,7 +48,8 @@
 </template>
 <script>
 	import listCell from '../../components/mix-list-cell';
-	import wmPosters from '@/components/wm-poster/wm-posters.vue';
+	import wmPosters from '@/components/wm-poster/wm-posters.vue';	
+	import { mapState, mapMutations } from 'vuex';
     export default {
         components: {
         	listCell,
@@ -68,20 +69,30 @@
 
             }
         },
+		computed: {
+			...mapState(['hasLogin','userInfo']) //对全局变量进行监控
+			
+		},
         onPullDownRefresh: function () {
             uni.stopPullDownRefresh(); // 停止刷新
         },
-		onLoad:function(){			
-			/*uni.$on('login',(userInfo)=>{			
-				this.username = userInfo
-				console.log('userinfo+'+userInfo)
-			})*/
-			
+		
+		onLoad:function(){
+			//已经登录，有缓存
+			let userInfo = uni.getStorageSync("userInfo") || "";			
+			if(userInfo.token){				
+				this.login(userInfo)
+				this.username = this.userInfo.nickname;
+				this.avatarUrl = this.userInfo.avatarUrl;
+				
+			}else{
+				uni.navigateTo({url:'/pages/login/login'});
+			}
+			/*
 			let userinfo = this.checkLogin('/pages/member/user',1)	
 			console.log(userinfo);
 			this.username = userinfo[0]			
-			this.avatarUrl = userinfo[1]
-			
+			this.avatarUrl = userinfo[1]*/			
 			// 签到
 			var currentTime = this.$queue.getCurrentDate(1) //当前日期
 			if(currentTime==uni.getStorageSync('qianTime')){
@@ -89,6 +100,12 @@
 			}else{
 				this.qiandao = '签到'
 			}
+			
+		},
+		onShow:function(){			
+			this.username = this.userInfo.nickname;
+			this.avatarUrl = this.userInfo.avatarUrl;
+			//查询金币
 			var that = this;
 			this.$http.get(this.$Api('my'),{},{isFactory: false})
 			.then(function (response) {		
@@ -98,19 +115,27 @@
 			    //这里只会在接口是失败状态返回，不需要去处理错误提示
 			    console.log(error);
 			});
-		},
-		onShow:function(){
+			
+			//伪邀请码
+			var s = [];
+			 var hexDigits = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+			 for (var i = 0; i < 6; i++) {
+			     s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+			 } 
+			var uuid = s.join("");
+			this.InvitationCode = uuid
 			/*
-			let userinfo = this.checkLogin('/pages/member/user',1)
-			console.log(userinfo);
-			this.username = userinfo[0]			
-			this.avatarUrl = userinfo[1]
-			*/
+			uni.$on('login',(userInfo)=>{				
+				this.username = userInfo.token;
+				this.avatarUrl = userInfo.avatarUrl
+			})			*/
 		},
 		onUnload() {
-			 uni.$off('login');  
+			 //uni.$off('login');  
 		},
         methods: {
+			...mapMutations(['login']),
+		    
 			qian(){
 				//判断是否已签到
 				var currentTime = this.$queue.getCurrentDate(1) //当前日期
@@ -118,7 +143,7 @@
 					this.$queue.showToast('今日已签到')					
 				}else{
 					this.qiandao = '已签到';
-					this.xdpNum = this.xdpNum+10
+					this.xdpNum = this.xdpNum+50
 					uni.setStorageSync('qianTime',currentTime)	
 					this.$queue.showToast('签到成功')									
 					//添加金币,请求接口
@@ -149,13 +174,14 @@
 						
 			},
 			//邀请码复制
-			copyHref(e) {
+			copyHref() {
+				let InvitationCode = this.InvitationCode;
 				// #ifdef H5
-				this.$queue.showToast("邀请码复制成功")
+				this.$queue.showToast(InvitationCode)
 				// #endif
 				// #ifdef APP-PLUS
 				uni.setClipboardData({
-					data: e,
+					data: InvitationCode,
 					success: (r => {
 						this.$queue.showToast("邀请码复制成功")
 					}),

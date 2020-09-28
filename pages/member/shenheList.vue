@@ -8,7 +8,12 @@
 <!-- 			<good-list :list="dataList"></good-list>-->			
 			<view class="shenhe">
 				<view class="item"  v-for="(item,index) in dataList" :key="index">
-					<image :src="item.pic" mode="" @click="previewImage(item.pic)"></image>
+					<view>
+						<image :src="item.pic" mode="" @click="previewImage(item.pic)"></image>
+						<view>
+							bun
+						</view>
+					</view>
 					<!-- <view class="">{{item.nickname}}</view> -->
 				</view>
 			</view>

@@ -32,7 +32,7 @@
 
 	import wInput from '../../components/watch-login/watch-input.vue' //input
 	import wButton from '../../components/watch-login/watch-button.vue' //button
-
+    import { mapState, mapMutations } from 'vuex';
 	export default {
 		data() {
 			return {
@@ -48,10 +48,16 @@
 			wInput,
 			wButton,
 		},
+		computed: {
+			...mapState(['hasLogin','userInfo']) //对全局变量进行监控
+			
+		},
 		mounted() {
 			_this = this;
+			/*
 			this.isLogin();
 			this.$queue.isLogin();
+			*/
 		},
 		onBackPress: function(e) {
 			if (e.from == 'backbutton') {
@@ -60,9 +66,11 @@
 			}
 		},
 		onLoad: function() {
-			this.$queue.loginClear()
+			//清除登录状态
+			// this.$queue.loginClear()
 		},
 		methods: {
+			...mapMutations(['login']),
 			getVerCode() {
 				//获取验证码
 				var rule = [{
@@ -117,7 +125,25 @@
 			},
 			startLogin() {
 				//手机登录
+				//监听登录状态
+				/*
+				uni.$emit('login', {  
+				                avatarUrl: 'https://img-cdn-qiniu.dcloud.net.cn/uploads/nav_menu/10.jpg',  
+				                token: 'user123456',  
+				                userName: 'unier',  
+				                login: true  
+				});*/
 				
+				this.login({  
+				                avatarUrl: 'https://thirdwx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEJzgueBUDbItZ7NPZbU0WJ8NEKsD5q3LpwfI2jibdHCzpnh3bURV3icETSHJ6oGyLbGFpbFDPHJm6Eg/132',  
+				                token: '99d4caeb17a66ba89d9904b321ca27e1',  
+				                nickname: 'zhang',
+								jinbi:9939300
+				})
+				uni.switchTab({
+					url: '/pages/member/user'
+				});
+				return false;
 				if (this.isRotate) {
 					//判断是否加载中，避免重复点击请求
 					return false;
@@ -223,8 +249,13 @@
 											this.$queue.setData('avatarUrl', info.userInfo.avatarUrl)
 											this.$queue.setData('token', res.data.token)
 											this.$queue.setData('phone', res.data.mobile)
+											this.login({
+											    avatarUrl: info.userInfo.avatarUrl,  
+											    token:  res.data.token,  
+											    nickname: info.userInfo.nickName,
+												jinbi:''
+											})
 											//如果没有绑定手机，去绑定 
-
 											if (res.data.mobile == '' || res.data.mobile == null) {
 												uni.redirectTo({
 													url: '/pages/login/forget'

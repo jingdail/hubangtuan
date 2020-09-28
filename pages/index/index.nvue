@@ -1,5 +1,14 @@
 <template>
-	<view class="tabs">
+	<view class="uni-flex uni-column" :style="{'height':windowHeight+'px'}">
+		<!-- #ifdef APP-PLUS -->  
+		    <view class="status_bar">  
+		        <view class="top_view"></view>  
+		    </view>  
+		<!-- #endif --> 
+	<view class="tabs" :style="{'margin-top':barHeight+'px'}">
+		<view class="logo">
+			<image src="/static/logo.png" lazy-load="" style="width: 76px;height: 28px;"></image>
+		</view>
 		<scroll-view ref="tabbar1" id="tab-bar" class="tab-bar" :scroll="false" :scroll-x="true" :show-scrollbar="false"
 		 :scroll-into-view="scrollInto">
 			<view style="flex-direction: column;">
@@ -27,6 +36,7 @@
 			</swiper-item>
 		</swiper>
 	</view>
+</view>
 </template>
 
 <script>
@@ -129,8 +139,22 @@
 			this.switchTab(this.tabIndex);
 
 			this.getTabbarItemsSize();
+			
+			this.getSystemStatusBarHeight();
 		},
 		methods: {
+			//获取系统状态栏高度
+			        getSystemStatusBarHeight:function(){
+			            // #ifdef APP-PLUS
+			            var height = plus.navigator.getStatusbarHeight();
+			            this.barHeight = height;
+						const { windowWidth, windowHeight } = uni.getSystemInfoSync();	
+						this.windowHeight = windowHeight-height
+			            // #endif
+			            // #ifdef H5
+			            this.barHeight = 0;
+			            // #endif
+			        },
 			ontabtap(e) {
 				let index = e.target.dataset.current || e.currentTarget.dataset.current;
 				//let offsetIndex = this._touchTabIndex = Math.abs(index - this._lastTabIndex) > 1;
@@ -219,8 +243,14 @@
 				// #endif
 
 				// #ifdef APP-NVUE || H5 || MP-WEIXIN || MP-QQ
-				setTimeout(() => {
-					this.updateIndicator(this.tabListSize[this.tabIndex].left, this.tabListSize[this.tabIndex].width);
+				setTimeout(() => {					
+					var left1 = this.tabListSize[this.tabIndex].left;
+					console.log('-------------')
+					console.log(this.tabListSize);
+					console.log(left1)
+					console.log('-------------')
+					var width1 = this.tabListSize[this.tabIndex].width;
+					this.updateIndicator(left1, width1);
 				}, 100)
 				// #endif
 			},
@@ -291,15 +321,36 @@
 </script>
 
 <style>
-	/* #ifndef APP-PLUS */
+	// #ifndef APP-NVUE
 	page {
 		width: 100%;
-		min-height: 100%;
-		display: flex;
+		height: 100%;
+	//endif	
 	}
-
-	/* #endif */
-
+	.logo{
+		margin-top: 10upx;
+		margin-left: 30upx;
+		display: flex;
+		justify-content: flex-start;
+		align-content: center;
+	}
+.logo image{
+	width: 20upx;
+	height: 20upx;
+}
+/* .status_bar {  
+    height: var(--status-bar-height);  
+    width: 100%;  
+    background-color: #F8F8F8;  
+}  
+.top_view {  
+    height: var(--status-bar-height);  
+    width: 100%;  
+    position: fixed;  
+    background-color: #F8F8F8;  
+    top: 0;  
+    z-index: 999;  
+} */
 	.tabs {
 		flex: 1;
 		flex-direction: column;

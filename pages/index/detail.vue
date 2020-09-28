@@ -25,10 +25,9 @@
 		<!-- tips -->
 		<view class="tip-box">
 			注意！所有加QQ、微信、淘宝刷单、拆红包，全是骗子！勿贪便宜！不要付款！
-			
 		</view>
          <block v-if="detail.typeid!=14 || detail.qrcode==null">
-		<PDD :content="detail.content" @uploadpic="uploadpic" :slt="detail.pic[0]"
+		<PDD :content="detail.content" @uploadpic="uploadpic" :slt="detail.pic"
 		 yzt="" :step2="detail.picinfo" :qrimg="detail.qrcode" :valid="detail.valid"></PDD>
 		 </block>
 			 <block v-else>
@@ -65,8 +64,18 @@
 		
 		onLoad() {
 			var that = this;
-			// console.log(this.id)
 			let HBTID = uni.getStorageSync('HBTID')
+			var url = this.$Api('info');
+			this.$http.get(url,{id:HBTID},{isFactory: false}).then(function (res) {
+				that.detail = res.data.data
+				uni.setNavigationBarTitle({
+					title: res.data.data.title
+				});
+				
+			}).catch(function (error) {			    
+			    console.log(error);				
+			});
+			/*
 			uni.request({
 				url: app.$Api('info') + HBTID,
 				success(res) {
@@ -77,7 +86,7 @@
 					});
 				}
 
-			})
+			})*/
 		},
 		methods: {
 			
@@ -111,7 +120,7 @@
 			},
 			renwuSubmit() {
 				
-				if (this.pic == '' || this.pic == undefined) {
+				if (this.pic == '') {
 					uni.showToast({
 						title: "请上传验证图片",
 						icon:"none"
@@ -179,13 +188,7 @@
 		display: none;
 	}
 
-	.renwu-box-step {
-		border-radius: 10upx;
-		background-color: #fff;
-		color: #282828;
-		padding: 20upx;
-		margin: 10upx 15upx;
-	}
+	
 
 	.content {
 		background-color: #E7E7E9;
@@ -231,26 +234,7 @@
 		margin-bottom: 50px;
 	}
 
-	.yanzhengtu-box .item {
-		border: 1px solid #FF5000;
-		border-radius: 10upx;
-		height: 200px;
-		width: 40%;
-
-	}
-
-	.yz-btn {
-		position: fixed;
-		bottom: 0;
-		height: 50px;
-		width: 100%;
-		flex-direction: row;
-		justify-content: flex-start;
-		align-items: center;
-		border-top: 0.5px solid #E7E7E9;
-		font-size: 36upx;
-
-	}
+	
 
 	.changeImage {
 		position: absolute;
@@ -263,7 +247,11 @@
 		color: #fff;
 		padding: 5px 0;
 	}
-
+     .yz-btn{
+		 width: 100%;
+		 position: fixed;
+		 bottom: 0;
+	 }
 	.yz-btn .huan {
 		width: 40%;
 		background: #fff;
@@ -286,7 +274,7 @@
 
 	.renwuSubmit {
 		width: 100%;
-		height: 100%;
+		height: 100upx;
 		background: #FF5000;
 		display: flex;
 		justify-content: center;

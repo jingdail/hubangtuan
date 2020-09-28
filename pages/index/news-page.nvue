@@ -112,7 +112,10 @@
 						var endTime = new Date();
 						console.log("request time " + new Date(endTime - startTime).getTime());
 						const data = result.data.data;
-						
+						// console.log("这里是啥啊");
+						// console.log(data);
+						// console.log(data.length)
+						// console.log("这里是啥啊");
 						this.isNoData = (data.length <= 0);
 
 						

@@ -1,6 +1,17 @@
 <script>
+	import { mapState, mapMutations } from 'vuex';
 	export default {
-		onLaunch: function() {			
+		computed: {
+			...mapState(['hasLogin', 'openid', 'userinfo'])
+		},
+		onLaunch: function() {		
+			let userInfo = uni.getStorageSync("userInfo") || "";
+			console.log(userInfo)
+			if(userInfo.token){				
+				this.login(userInfo)
+			}else{
+				console.log('hello');
+			}
 			console.log('App Launch')
 		},
 		onShow: function() {

@@ -16,6 +16,9 @@ import HttpRequest from './common/httpRequest'
 import HttpCache from './common/cache'
 import queue from './common/queue'
 
+import store from './store'
+//把vuex定义成全局组件
+Vue.prototype.$store = store
 
 Vue.config.productionTip = false
 
@@ -32,8 +35,6 @@ Vue.prototype.$SysCache = HttpCache;
  * 返回:已经登录返回数组 [用户 id, 用户随机码, 用户昵称, 用户头像]
  */
 
-
-
 Vue.prototype.checkLogin = function(backpage, backtype){
 	var xdpName  = uni.getStorageSync('username');
 	var xdpAvatarUrl = uni.getStorageSync('avatarUrl');
@@ -49,6 +50,7 @@ Vue.prototype.checkLogin = function(backpage, backtype){
 App.mpType = 'app'
 
 const app = new Vue({
-    ...App
+    ...App,
+	store
 })
 app.$mount()

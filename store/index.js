@@ -10,7 +10,8 @@ const store = new Vuex.Store({
 		login(state, provider) {
 			console.log("登录了");
 			console.log(provider)
-			state.hasLogin = true;
+			state.hasLogin = 1;
+			console.log(state.hasLogin);
 			state.userInfo = provider
 			uni.setStorage({
 				key:"userInfo",
