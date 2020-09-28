@@ -111,7 +111,7 @@
 			},
 			renwuSubmit() {
 				
-				if (this.pic == '') {
+				if (this.pic == '' || this.pic == undefined) {
 					uni.showToast({
 						title: "请上传验证图片",
 						icon:"none"

@@ -309,7 +309,7 @@
             },
             {
                 "pagePath" : "pages/shop/shop",
-                "text" : "地阿娇",
+                "text" : "超低价",
                 "iconPath" : "static/shop.png",
                 "selectedIconPath" : "static/shop1.png"
             },
