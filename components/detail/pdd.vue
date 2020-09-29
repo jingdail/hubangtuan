@@ -74,7 +74,11 @@
 				pic:""
 			}
 		},
+		computed: {
+			// ...mapState(['hasLogin', 'openid', 'userinfo'])
+		},	
 		methods: {
+			// ...mapMutations(['login']),
 			copyLink:function(){
 				uni.setClipboardData({
 					data:this.content,
@@ -95,6 +99,26 @@
 					})
 					return false;
 				}
+				if(!this.hasLogin){
+					let currentPage = "/pages/index/detail";
+					let url = '/pages/login/login?query='+encodeURIComponent(JSON.stringify(currentPage))
+					
+					uni.showModal({
+						title: '需要登录',
+						content: '',
+						confirmText:"去登录",
+						success: function (res) {						
+							if (res.confirm) {
+								uni.navigateTo({url:url});
+								
+							} else if (res.cancel) {
+								console.log('用户点击取消');
+							}
+						}
+					});
+					
+					return false;
+				}
 				var that = this
 				uni.chooseImage({
 					count: 1, //默认9
@@ -108,13 +132,7 @@
 						const uploadTask = uni.uploadFile({
 							url: that.$Api('uploadpic'),
 							filePath: res.tempFilePaths[0],
-							name: 'file',
-							formData:{
-								"token":"99d4caeb17a66ba89d9904b321ca27e1"
-							},
-							formData: {
-								'user': 'test'
-							},
+							name: 'file',							
 							success: function(uploadFileRes) {
 								console.log('uploads:')
 								console.log(uploadFileRes);
@@ -142,6 +160,7 @@
 				})
 			},
 			sendAppMsg() {
+				console.log("weixin")
 				// #ifdef APP-PLUS
 				uni.share({
 					provider: "weixin",
@@ -152,7 +171,7 @@
 						console.log("success:" + JSON.stringify(res));
 					},
 					fail: function(err) {
-						console.log("fail:" + JSON.stringify(err));
+						console.log(err)
 					}
 				});
 				// #endif

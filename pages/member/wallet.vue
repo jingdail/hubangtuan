@@ -152,7 +152,8 @@
 					}
 				},
 				dataList: [],
-				TotalGold:0
+				TotalGold:0,
+				today_jinbu:0
 				
 			}
 		},

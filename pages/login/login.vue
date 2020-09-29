@@ -12,7 +12,7 @@
 				 setTime="30" ref="runCode" @setCode="getVerCode()"></wInput>
 
 			</view>
-			<wButton class="wbutton" text="登录" :rotate="isRotate" @click.native="startLogin()"></wButton>
+			<wButton class="wbutton" text="暂仅支持微信登录" :rotate="isRotate" @click.native="startLogin()"></wButton>
 			<!-- 其他登录 -->
 			<view class="other_login cuIcon">
 				<view class="login_icon">
@@ -133,17 +133,43 @@
 				                userName: 'unier',  
 				                login: true  
 				});*/
-				
-				this.login({  
-				                avatarUrl: 'https://thirdwx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEJzgueBUDbItZ7NPZbU0WJ8NEKsD5q3LpwfI2jibdHCzpnh3bURV3icETSHJ6oGyLbGFpbFDPHJm6Eg/132',  
-				                token: '99d4caeb17a66ba89d9904b321ca27e1',  
-				                nickname: 'zhang',
-								jinbi:9939300
-				})
-				uni.switchTab({
-					url: '/pages/member/user'
-				});
+					this.login({  
+								                avatarUrl: 'https://thirdwx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEJzgueBUDbItZ7NPZbU0WJ8NEKsD5q3LpwfI2jibdHCzpnh3bURV3icETSHJ6oGyLbGFpbFDPHJm6Eg/132',  
+								                token: 'aec11def2986125bc8e80332036f1d3c',  
+								                nickname: 'zhang',
+												jinbi:9939300
+								})
+								uni.switchTab({
+									url: '/pages/member/user'
+								});
+				this.$queue.showToast("暂仅支持微信登录");
 				return false;
+				var rule = [{
+					name: "phoneData",
+					checkType: "phoneno",
+					errorMsg: "错误的手机号码"
+				},
+				{
+					name: "verCode",
+					checkType: "string",
+					checkRule:"4,4",
+					errorMsg: "验证码错误"
+				}
+				];
+				let phone = {}
+				console.log(this.verCode)
+				phone.phoneData =  this.phoneData
+				phone.verCode =  this.verCode
+				var checkRes = graceChecker.check(phone, rule);
+				if (checkRes) {
+					// uni.showToast({title:"验证通过!", icon:"none"});
+				} else {
+					uni.showToast({
+						title: graceChecker.error,
+						icon: "none"
+					});
+					return false;
+				}
 				if (this.isRotate) {
 					//判断是否加载中，避免重复点击请求
 					return false;

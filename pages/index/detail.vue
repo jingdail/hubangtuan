@@ -45,6 +45,7 @@
 <script>
 	import PDD from '@/components/detail/pdd.vue';
 	import SCANCODE from '@/components/detail/scancode.vue';
+	import { mapState, mapMutations } from 'vuex';
 	var app = getApp();
 	export default {
 		components: {
@@ -56,12 +57,14 @@
 				content: "",
 				id: 0,
 				detail: [],
-				// pic: '',
+				pic: '',
 				// isbaoming: 1,
 				// picinfo:""
 			}
 		},
-		
+		computed: {
+			...mapState(['hasLogin', 'openid', 'userinfo'])
+		},		
 		onLoad() {
 			var that = this;
 			let HBTID = uni.getStorageSync('HBTID')
@@ -89,7 +92,7 @@
 			})*/
 		},
 		methods: {
-			
+			...mapMutations(['login']),
 			sendAppMsg() {
 				// #ifdef APP-PLUS
 				uni.share({
@@ -119,7 +122,26 @@
 				})
 			},
 			renwuSubmit() {
-				
+				if(!this.hasLogin){
+					let currentPage = "/pages/index/detail";
+					let url = '/pages/login/login?query='+encodeURIComponent(JSON.stringify(currentPage))
+					
+					uni.showModal({
+						title: '需要登录',
+						content: '',
+						confirmText:"去登录",
+						success: function (res) {						
+							if (res.confirm) {
+								uni.navigateTo({url:url});
+								
+							} else if (res.cancel) {
+								console.log('用户点击取消');
+							}
+						}
+					});
+					
+					return false;
+				}
 				if (this.pic == '') {
 					uni.showToast({
 						title: "请上传验证图片",
@@ -133,8 +155,7 @@
 				param.pic = this.pic
 				this.$http.post(this.$Api('baoming'), param, {
 						isFactory: false
-					})
-					.then(function(response) {
+					}).then(function(response) {
 						if (response.data.error == 0) {
 							uni.showToast({
 								title: '提交成功'
@@ -144,6 +165,11 @@
 									url: '/pages/member/renwu'
 								})
 							}, 2000)
+						}
+						if(response.data.error == 1){
+							uni.showToast({
+								title: response.data.errMsg
+							})
 						}
 					}).catch(function(error) {
 						//这里只会在接口是失败状态返回，不需要去处理错误提示

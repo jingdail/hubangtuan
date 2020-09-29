@@ -118,7 +118,7 @@
 <script>
 	import uniSteps from '@/components/uni-steps/uni-steps.vue'
 	import uniIcons from "@/components/uni-icons/uni-icons.vue"
-
+	import { mapState, mapMutations } from 'vuex';
 	export default {
 		components: {
 			uniSteps,
@@ -158,6 +158,10 @@
 				currCateIndex: 1
 			}
 		},
+		computed: {
+			...mapState(['hasLogin']) //对全局变量进行监控
+			
+		},
 		onShow:function(event){
 			
 			var that =  this;
@@ -175,7 +179,7 @@
 					});
 					
 					that.dalei = type
-					console.log(that.dalei)
+					// console.log(that.dalei)
 					
 					let a = that.categoryList[0]['subclass']
 					console.log(a)
@@ -184,18 +188,16 @@
 					that.detail.typeid = 1
 				}
 			})
-			
+			/*
 			this.$http.get(this.$Api('my'),{},{isFactory: false})
 			.then(function (response) {					
 				that.jinbi = response.data.data.jinbi
 			}).catch(function (error) {				    
 			    console.log(error);
-			});
+			});*/
 			
 		},		
-		computed: {
-
-		},
+		
 		methods: {
 			tostr(item){
 			      return item.toString();
@@ -224,9 +226,20 @@
 				this.goldindex = e.target.value
 				let godnum = this.goldarray[e.target.value]
 				this.detail.gold = godnum.replace("金币/单","");
+				
 				console.log(this.detail.gold);
 			},
-			getJinbiNum(){
+			getJinbiNum:function(){	
+				console.log("=====");
+				console.log(this.hasLogin);
+				console.log("=====");
+				//如果没有登录
+				if(!this.hasLogin){
+					let currentPage = "/pages/fabu/fabu";
+					let url = '/pages/login/login?query='+encodeURIComponent(JSON.stringify(currentPage))
+					uni.navigateTo({url:url});
+					return false;
+				}
 				var xuyaojinbu = this.detail.danshu*this.detail.gold	
 				if(xuyaojinbu>10){
 					uni.showModal({
@@ -273,13 +286,36 @@
 				this.detail.timex = text
 			},
 			getdanshu: function(event) {
-				this.detail.danshu = event.target.value				
+				this.detail.danshu = event.target.value;
+				console.log("=====");
+				console.log(this.hasLogin);
+				console.log("=====");
+				
 			},
 			diytitle: function(event) {
 				this.detail.typeinfo = event.target.value
 			},
 			nextstep: function() {
-				
+				if(!this.hasLogin){
+					let currentPage = "/pages/fabu/fabu";
+					let url = '/pages/login/login?query='+encodeURIComponent(JSON.stringify(currentPage))
+					
+					uni.showModal({
+						title: '需要登录',
+						content: '',
+						confirmText:"去登录",
+						success: function (res) {						
+							if (res.confirm) {
+								uni.navigateTo({url:url});
+								
+							} else if (res.cancel) {
+								console.log('用户点击取消');
+							}
+						}
+					});
+					
+					return false;
+				}
 
 				if (this.danshu == null || this.danshu < 10) {
 					this.$queue.showToast('任务单数必须大于10');
@@ -291,7 +327,7 @@
 					return false;
 				}
 				//是否足够
-				this.getJinbiNum();
+				
 				
 				if (this.tindex == null) {
 					console.log('请选择任务有效时间');

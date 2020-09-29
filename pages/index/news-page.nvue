@@ -159,12 +159,9 @@
 				this.requestParams.page = 0;
 			},
 			goDetail(detail) {
-				console.log(detail)
+				
 				uni.setStorageSync('HBTID',detail.id)
-				if (this.navigateFlag) {
-					return;
-				}
-				this.navigateFlag = true;
+				
 				uni.navigateTo({
 					url: '/pages/index/detail?query=' + encodeURIComponent(JSON.stringify(detail))
 				});

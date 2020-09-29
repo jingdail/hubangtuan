@@ -1,10 +1,5 @@
 <template>
-	<view class="uni-flex uni-column" :style="{'height':windowHeight+'px'}">
-		<!-- #ifdef APP-PLUS -->  
-		    <view class="status_bar">  
-		        <view class="top_view"></view>  
-		    </view>  
-		<!-- #endif --> 
+
 	<view class="tabs" :style="{'margin-top':barHeight+'px'}">
 		<view class="logo">
 			<image src="/static/logo.png" lazy-load="" style="width: 76px;height: 28px;"></image>
@@ -36,7 +31,7 @@
 			</swiper-item>
 		</swiper>
 	</view>
-</view>
+
 </template>
 
 <script>
@@ -321,19 +316,14 @@
 </script>
 
 <style>
-	// #ifndef APP-NVUE
+	/* #ifndef APP-NVUE*/
 	page {
 		width: 100%;
 		height: 100%;
-	//endif	
+	
 	}
-	.logo{
-		margin-top: 10upx;
-		margin-left: 30upx;
-		display: flex;
-		justify-content: flex-start;
-		align-content: center;
-	}
+/*endif	*/
+	
 .logo image{
 	width: 20upx;
 	height: 20upx;

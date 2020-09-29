@@ -1,8 +1,18 @@
 <script>
 	import { mapState, mapMutations } from 'vuex';
+	const systemInfo = uni.getSystemInfoSync();
+	const statusBarHeight = Math.round((750 / systemInfo.screenWidth) * systemInfo.statusBarHeight);
 	export default {
 		computed: {
 			...mapState(['hasLogin', 'openid', 'userinfo'])
+		},
+		methods:{
+			...mapMutations(['login']),
+		},
+		globalData: {
+			systemInfo: systemInfo,
+			statusBarHeight: statusBarHeight + 'rpx',
+			statusBarHeightNum: statusBarHeight,			
 		},
 		onLaunch: function() {		
 			let userInfo = uni.getStorageSync("userInfo") || "";
@@ -10,7 +20,7 @@
 			if(userInfo.token){				
 				this.login(userInfo)
 			}else{
-				console.log('hello');
+				console.log('');
 			}
 			console.log('App Launch')
 		},
