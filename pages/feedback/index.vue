@@ -7,17 +7,21 @@
 		<view class="feedback-body"><textarea placeholder="请详细描述你的问题和意见..." v-model="sendDate.content" class="feedback-textare" /></view>
 		<view class="feedback-title"><text>QQ/邮箱</text></view>
 		<view class="feedback-body"><input class="feedback-input" v-model="sendDate.contact" placeholder="方便我们联系你 " /></view>
+		<!-- <view class="">
+			<view class="uni-uploader" @click="chooseImg()">+</view>
+		</view> -->
 		<view class="feedback-title feedback-star-view">
-			<text>应用评分</text>
+			<view>应用评分</view>
 			<view class="feedback-star-view">
 				<text class="feedback-star" v-for="(value, key) in stars" :key="key" :class="key < sendDate.score ? 'active' : ''" @tap="chooseStar(value)"></text>
 			</view>
 		</view>
-		<button type="primary" style="" class="feedback-submit" @tap="send">提交</button>
+		<button type="" style="" class="feedback-submit" @tap="send">提交</button>
 	</view>
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex';
 export default {
 	data() {
 		return {
@@ -31,7 +35,32 @@ export default {
 			}
 		};
 	},
+	computed: {
+		...mapState(['hasLogin','userInfo']) //对全局变量进行监控
+		
+	},
 	onLoad() {
+		if(!this.hasLogin){
+			uni.showModal({
+				title:'需要登录',
+				cancelText:'取消',
+				confirmText:'确定',
+				success: (e) => {
+					if (e.confirm) {
+						uni.navigateTo({url:"../login/login"});
+						
+					} else if (res.cancel) {
+						uni.redirectTo({
+							url:"../index/index"
+						})
+					}
+					
+				}
+			})
+			
+			return false;
+			
+		}
 		let deviceInfo = {
 			appid: plus.runtime.appid,
 			imei: plus.device.imei, //设备标识
@@ -82,7 +111,7 @@ export default {
 		send() {
 			//发送反馈
 			console.log(JSON.stringify(this.sendDate));
-
+			
 			if (!this.sendDate.content) {
 				uni.showToast({
 					icon: 'none',
@@ -99,29 +128,23 @@ export default {
 			}
 			// uni.report('意见反馈', this.sendDate);
 			this.$queue.showLoading('加载中...');
-			this.$Request
-				.postJson('/message/add', {
-					state: 2,
-					title: this.sendDate.contact,
-					content: JSON.stringify(this.sendDate)
-				})
-				.then(res => {
-					if (res.status === 0) {
-						uni.showToast({
-							title: '反馈成功'
-						});
-						setTimeout(function() {
-							uni.navigateBack();
-						}, 1000);
-					} else {
-						uni.hideLoading();
-						uni.showModal({
-							showCancel: false,
-							title: '反馈失败',
-							content: res.msg
-						});
-					}
-				});
+			var url ="https://api.hubangtuan.cn/my/feedback"
+			this.$http.post(url,this.sendDate,{isFactory: false})
+			.then(function (response) {
+				console.log(response)
+				if(response.data.error=="0"){
+					uni.showToast({
+						title:'发布成功'
+					})
+					
+				}else{
+					
+					
+				}
+			}).catch(function (error) {
+			    //这里只会在接口是失败状态返回，不需要去处理错误提示
+			    console.log(error);
+			});
 		}
 	}
 };
@@ -301,7 +324,10 @@ view {
 .feedback-submit {
 	background: #FF5000;
 	color: #ffffff;
-	margin: 20upx;
+	margin: 30upx 0;
+	font-size: 30upx;
+	border-radius: 0;
+	width: 100%;
 	box-shadow: 0 0 10upx rgba(255,80,0, 0.3);
 }
 </style>

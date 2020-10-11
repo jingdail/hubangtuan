@@ -1,0 +1,65 @@
+<template>
+	<block v-if="loading">
+		<view class="s-full-loading" :style="{ backgroundColor: backgroundColor }">
+			<image class="s-full-loading-image" :src="image" ref="loadingLogos"></image>
+			<text class="s-full-loading-text" :style="{ color: textColor }">{{ text }}</text>
+		</view>
+	</block>
+</template>
+<script>
+
+export default {
+	name: 'simple-loading',
+	props: {
+		loading: {
+			type: Boolean,
+			default: false
+		},
+		image: {
+			type: String,
+			default: ''
+		},
+		text: {
+			type: String,
+			default: 'loading ...'
+		},
+		textColor: {
+			type: String,
+			default: '#999999'
+		},
+		backgroundColor: {
+			type: String,
+			default: 'rgba(255, 255, 255, 0.8)'
+		}
+	},
+	updated: function() {
+		var loadingLogos = this.$refs.loadingLogos;
+		// this.animation1(loadingLogos);
+	},
+	methods: {
+
+	}
+};
+</script>
+<style>
+.s-full-loading {
+	width: 750rpx;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	left: 0;
+	top: 0;
+	bottom: 0;
+}
+.s-full-loading-image {
+	width: 150rpx;
+	height: 150rpx;
+	/* 	border-radius: 150rpx; */
+}
+.s-full-loading-text {
+	line-height: 50rpx;
+	font-size: 26rpx;
+	margin-top: 10rpx;
+	text-align: center;
+}
+</style>

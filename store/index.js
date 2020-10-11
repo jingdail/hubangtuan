@@ -25,6 +25,14 @@ const store = new Vuex.Store({
 			uni.removeStorage({
 				key:"userInfo"
 			})
+			uni.removeStorage({
+				key:"token"
+			})
+			uni.clearStorage()
+			
+			uni.switchTab({
+				url:"pages/index/index"
+			})
 		}
 	},
     actions: {}

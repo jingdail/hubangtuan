@@ -6,18 +6,28 @@
 		</view>
 		
 		<!-- top="xxx"下拉布局往下偏移,防止被悬浮菜单遮住 -->
-		 <mescroll-body ref="mescrollRef" @init="mescrollInit" top="120" @down="downCallback" :up="upOption" :top="80" @up="upCallback" @emptyclick="emptyClick">
+		 <mescroll-body ref="mescrollRef" @init="mescrollInit"  @down="downCallback" :top="80" :up="upOption"  @up="upCallback" @emptyclick="emptyClick">
 			<!-- 数据列表 --> 
-			<view class="goods-box" v-for="(item,index) in dataList" :key="item.itemid">
+			<view class="goods-box" v-for="(item,index) in dataList" :key="item.goods_id">
 				<view class="itempic">
-					<image :src="item.itempic" mode="aspectFit"></image>
+					<image :src="item.goods_thumbnail_url" mode="aspectFit"></image>
 				</view>
 				<view class="itemcontent">
 					<view class="">
-						{{item.itemtitle}}
+						{{item.goods_name}}
 					</view>
 					<view class="price">
-						{{item.itemprice}}
+						优惠券：¥{{formatNum(item.coupon_discount)}}
+						
+						
+					</view>
+					<view class="buybox">
+					<view class="realPrice">券后: ¥
+					{{realPrice(item.min_group_price,item.coupon_discount)}}
+					</view>
+					<view class="gobuy" @tap="gobuy(item)">
+						去看看
+					</view>
 					</view>
 				</view>
 			</view>
@@ -34,7 +44,7 @@
 				upOption:{
 					page: {
 						num: 0, // 当前页码,默认0,回调之前会加1,即callback(page)会从1开始
-						size: 20// 每页数据的数量
+						size: 10// 每页数据的数量
 					},
 					noMoreSize: 4, 
 					empty:{
@@ -43,20 +53,11 @@
 					}
 				},
 				dataList: [], //列表数据
-				tabs: ['男装','女装','美妆','手机','食品','数码','电器'],
+				tabs: ['百货','母婴','食品','女装','电器','鞋包','内衣','美妆','男装','水果','家纺','文具','运动','虚拟','汽车','家装','家具','医药'],
+				tabndex: ['15','4','1','14','18','1281','1282','16','743','13','18','2478','1451','59909','2048','1917','2974','3279'],
 				tabIndex: 0 ,// tab下标
-				cateid:0//当前分类ID
+				cateid:15
 			}
-		},
-		onReady() {
-			uni.showTabBarRedDot({
-				index:3,
-				success() {					
-				},
-				fail() {
-					console.log('blue')
-				}
-			})
 		},
 		methods: { 
 			/*上拉加载的回调: 其中page.num:当前页 从1开始, page.size:每页数据条数,默认10 */
@@ -66,19 +67,21 @@
 			upCallback(page) {
 				let pageNum = page.num; // 页码, 默认从1开始
 				let pageSize = page.size; // 页长, 默认每页10条
-				var url ='https://www.gomyorder.cn/tao/commodity/selectCommodityList?page=0&size=10'
+				var url ='http://hubangtuan.cn/pddapi/ddk.php?act=list&page='+page.num+"&cateid="+this.cateid
+				console.log(url)
 				var that = this;
 				
 				this.$http.get(url,{pid:0},{isFactory: false}).then(function (res) {
 					// 接口返回的当前页数据列表 (数组)
 					console.log(res)
-					let curPageData = res.data.data.content
+					let curPageData = res.data.goods_search_response.goods_list
 					// 接口返回的当前页数据长度 (如列表有26个数据,当前页返回8个,则curPageLen=8)
 					let curPageLen = curPageData.length; 
 					// 接口返回的总页数 (如列表有26个数据,每页10条,共3页; 则totalPage=3)
-					// let totalPage = data.xxx; 
+					// let totalPage = 100; 
 					// 接口返回的总数据量(如列表有26个数据,每页10条,共3页; 则totalSize=26)
-					let totalSize = res.data.list_num; 
+					// let totalSize = res.data.list_num; 
+					let totalSize = 10000;
 					// 接口返回的是否有下一页 (true/false)
 					// let hasNext = data.xxx;					
 					if(page.num == 1) that.dataList = []; //如果是第一页需手动置空列表					
@@ -97,80 +100,24 @@
 				})
 			},
 			
-			// 切换菜单
-			tabChange(e) {			
-				this.cateid = this.tabs[e].typeid
+			
+			formatNum(e){
+				return (e/100);
+			},
+			gobuy(e){
+				uni.navigateTo({
+					url:'./goodsdetail?query=' + encodeURIComponent(JSON.stringify(e))
+				})
+			},
+			realPrice(a,b){
+				var c = a-b;
+				return (c/100);
+				
+			},
+			tabChange(e) {
+				this.cateid = this.tabndex[e]
 				this.dataList = []// 先置空列表,显示加载进度
 				this.mescroll.resetUpScroll() // 再刷新列表数据
-			},
-			onLoad() {
-				
-				// 需要固定swiper的高度uni.showTabBarRedDot(OBJECT)
-				this.height = uni.getSystemInfoSync().windowHeight + 'px';				
-				var url = this.$Api('category');
-				var that = this;
-				
-				let category = uni.getStorageSync('category')	
-				console.log(category)
-				if(category){
-					// that.tabs = category
-					// that.tabs = category.data.categories;					
-				}else{
-					this.$http.get(url,{pid:0},{isFactory: false}).then(function (res) {						
-						uni.setStorageSync('category',JSON.stringify(res))		
-						console.log(res)
-						// that.tabs = res.data.categories;
-					    //这里只会在接口是成功状态返回
-					}).catch(function (error) {
-					    //这里只会在接口是失败状态返回，不需要去处理错误提示
-					    console.log(error);
-					});
-				}
-				
-				/*
-				var socketOpen = false;
-				    var socketMsgQueue = [];
-				     
-				    uni.connectSocket({
-				      url: 'ws://122.152.221.74:8282', 
-					  success:function(e){
-					  	console.log(e)
-					  },
-					  fail:function(e){
-					  	console.log(e)
-					  }
-				    });
-				     
-				    uni.onSocketOpen(function (res) {
-					  console.log('WebSocket连接已打开！');
-				      socketOpen = true;
-				      for (var i = 0; i < socketMsgQueue.length; i++) {
-				        sendSocketMessage(socketMsgQueue[i]);
-				      }
-				      socketMsgQueue = [];
-				    });
-					
-				     uni.onSocketMessage(function (res) {
-				           console.log('收到服务器内容：' + res.data);
-				    });
-					 uni.onSocketError(function (res) {
-						console.log('WebSocket连接打开失败，请检查！');
-						console.log(res)
-					});
-				    function sendSocketMessage(msg) {
-				      if (socketOpen) {
-				        uni.sendSocketMessage({
-				          data: msg
-				        });
-				      } else {
-				        socketMsgQueue.push(msg);
-				      }
-				    }
-					uni.onSocketClose(function (res) {
-					  console.log('WebSocket 已关闭！'); 
-					  uni.closeSocket();
-					});
-				*/
 			}
 		}
 	}
@@ -213,7 +160,25 @@
 	}
 	.price{
 		margin-top: 20upx;
+		color: #252525;
+		font-size: 30upx;
+	}
+	.realPrice{
 		color: #FF5000;
-		font-size: 36upx;
+		font-size: 34upx;
+	}
+	.buybox{
+		display: flex;
+		justify-content:space-between;
+		align-items: center;
+		
+	}
+	.gobuy{
+		background-color: #FF5000;
+		color: #fff;
+		font-size: 30upx;
+		padding: 10upx 40upx;
+		border-radius: 5px;
+		
 	}
 </style>

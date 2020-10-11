@@ -33,7 +33,7 @@
 			</view>
 		</view>
 		
-		<button @click="submitRenwu()" hover-class="none">发布任务</button>       
+		<view class="publish" @click="submitRenwu()">发布任务</view>       
     </view>
 </template>
 
@@ -237,13 +237,16 @@
 	uni-icons{
 		margin-right: 10px;
 	}
-	button{
+	.publish{
 		position: fixed;
-		bottom: 30upx;		
-		border-radius: 100px;
+		bottom: 0upx;	
 		color: #fff;
-		width: 90%;
-		left: 5%;
+		width: 100%;
+		border-radius: 0;
+		text-align: center;
+		font-size: 38upx;
+		line-height: 100upx;
+		border: 0;
 		background-color: #FF5000;
 		box-shadow: 0 0 16upx rgba(255,80,0, .3);
 	}
@@ -277,10 +280,11 @@
 		margin: 0 auto;
 		position: relative;
 		overflow: hidden;
+		margin-bottom: 100upx;
 	}
 	.yzt{
 		border: 1px solid #FF5000;
-		
+		border-radius: 10upx;
 	}
 	.changeImage{
 		position: absolute;
@@ -289,9 +293,9 @@
 		width: 100%;
 		background-color: #FF5000;
 		z-index: 10;
-		height: 40px;
-		line-height: 30px;
+		
 		text-align: center;
+		font-size: 36upx;
 		color: #fff;
 		padding: 5px 0;
 	}

@@ -220,6 +220,10 @@
 
 
 <style>
+	image{
+		width: 300px;
+		height: 200px;
+	}
 	.down-qr {
 		display: flex;
 		align-items: center;

@@ -1,0 +1,72 @@
+<template>
+   <refresh class="u-refresh" v-if="loadingType == 'image'" @refresh="onrefresh" @pullingdown="onpullingdown" :display="refreshing ? 'show' : 'hide'">
+        <image class="loading-bg" resize="contain" src="/static/logo.png" />
+    </refresh>
+
+    <refresh class="tui-refresh" v-else @refresh="onrefresh" @pullingdown="onpullingdown" :display="refreshing ? 'show' : 'hide'">
+        <loading-indicator class="tui-loading"></loading-indicator>
+        <text class="refresh-text">{{ refreshText }}</text>
+    </refresh>
+</template>
+<style scoped>
+.u-refresh {
+    height: 140rpx;
+    width: 750rpx;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+}
+.loading-bg {
+    position: absolute;
+    left: 325rpx;
+    margin-top: 30rpx;
+    width: 100rpx;
+    height: 100rpx;
+}
+.tui-loading {
+    height: 40rpx;
+    width: 40rpx;
+    color: #999999;
+}
+
+.tui-refresh {
+    width: 750rpx;
+    height: 80rpx;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.refresh-text {
+    text-align: center;
+    font-size: 26rpx;
+    color: #999999;
+}
+</style>
+<script>
+export default {
+    props: {
+        refreshing: {
+            type: Boolean,
+            default: false
+        },
+        loadingType: {
+            type: String,
+            default: 'image' // 加载类型，支持image 和text
+        },
+        refreshText: {
+            type: String,
+            default: '下拉加载' // 提示类型
+        }
+    },
+
+    methods: {
+        onrefresh(event) {
+            this.$emit('refresh', event);
+        },
+        onpullingdown(event) {
+            this.$emit('pullingdown', event);
+        }
+    }
+};
+</script>

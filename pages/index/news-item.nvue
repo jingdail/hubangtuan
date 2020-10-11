@@ -14,7 +14,7 @@
 					</view>
 				</view>
 				<view class="god">
-					<text class="god-text">+{{formatNum(newsItem.price)}}</text>
+					<text class="god-text">+{{formatNum(newsItem.price)}}0</text>
 				</view>
 			</view>
         </view>      
@@ -47,14 +47,14 @@
 
 <style lang="scss">
 	.god{				
-		width: 100rpx;
+		width: 150rpx;
 	}
 	.god-text{
 		font-size: 32upx;
 		color: $uni-base-color;		
 	}
 	.media-title{
-		font-size: 24upx;
+		font-size: 34upx;
 		color: #333;
 		margin-bottom: 10px;
 	}
@@ -75,14 +75,14 @@
 		color: $uni-font-color-base;
 	}
 	.box{
-		width: 480rpx;
+		width: 440rpx;
 		color: red;
 	}
 	.media-item{
 		padding: 30upx  20upx;
-		margin: 10upx 15upx;
+		margin: 20upx 25upx;
 		text-overflow: clip;
-		border-radius: 10upx;
+		border-radius: 8upx;
 		background-color: #fff;
 	}
     .view {
@@ -106,9 +106,9 @@
 	  align-items: center;
     }
 	.image-list1{
-		width: 90upx;
-		height: 90upx;
-		border-radius: 1000px;
+		width: 100upx;
+		height: 100upx;
+		border-radius: 100px;
 	}
 
     

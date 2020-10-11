@@ -2,7 +2,11 @@
 <template>
 	<view class="pd-list">
 		<view class="pd-li" v-for="(item,index) in list" :key="index" @tap="ToDetail(item)">
-			<!-- <view class="flag">优质</view> -->
+			<view class="flag">
+				<view class="y" v-if="item.price>=2000">优</view>
+				<view class="c" v-if="item.price>=1000">推</view>
+			</view>
+			
 			<view>
 				<image class="pd-img" :src="item.avatarurl" mode="widthFix" />				
 			</view>
@@ -11,7 +15,7 @@
 				<text class="pd-tag">剩余数量：<text class="shengyu">{{item.done_num}}/</text>{{item.num}}</text>
 
 			</view>
-			<view class="incr-gold">
+			<view class="incr-gold"> 
 				+{{ formatNum(item.price) }}
 			</view>
 		</view>
@@ -38,7 +42,7 @@
 			ToDetail(e) {
 				
 				uni.navigateTo({
-					url: '/pages/index/detail?detailDate=' + encodeURIComponent(JSON.stringify(e))
+					url: '/pages/index/detail?query=' + encodeURIComponent(JSON.stringify(e))
 				}); 
 				/*
 				uni.share({
@@ -72,27 +76,38 @@
 		align-items: center;
 		background-color: #fff;
 		border-radius: 3px;
-		padding: 25upx;
+		padding: 30upx;
 		margin-bottom: 8px;
 		// border-bottom: 0.5upx solid $uni-line-color;
 		margin: 10px;
 		position: relative;
+		overflow: hidden;
 	}
 
 	.pd-li .flag {
-		background-color: $uni-base-color;
+		
 		color: #fff;
 		font-size: 10px;
 		position: absolute;
-		right: 20upx;
+		right: 0;
 		top: 0;
-		padding: 3upx;
-		border-radius: 0 0 3upx 3upx;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
 	}
-
+	.pd-li .flag .y{
+		padding: 3px;
+		border-radius: 0 0 3upx 3upx;
+		background-color: #FF5000;
+	}
+	.pd-li .flag .c{
+		padding: 3px;
+		border-radius: 0 0 3upx 3upx;
+		background-color: #f0ad4e;
+	}
 	.pd-li .pd-img {
-		width: 90upx;
-		height: 90upx;
+		width: 100upx;
+		height: 100upx;
 		border-radius: 1000px;
 
 	}
@@ -104,7 +119,7 @@
 	}
 
 	.pd-li .pd-name {
-		font-size: $font-base;
+		font-size: 32upx;
 		overflow: hidden;
 		text-align: left;
 		color: #333;

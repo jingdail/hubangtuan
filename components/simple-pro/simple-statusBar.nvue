@@ -1,0 +1,41 @@
+<template>
+    <view class="statusBar">
+        <view v-if="!paddingTop" :style="{height:height, 'background-color':bgColor, 'background-image':bgImage}"></view>
+		<view v-else :style="{'padding-top':height}"></view>
+    </view>
+	
+</template>
+<script>
+export default {
+	props:{
+		bgColor : {
+			type : String,
+			default : "#FFFFFF"
+		},
+		bgImage:{
+			type : String,
+			default : "none"
+		},
+		paddingTop:{
+			type:Boolean,
+			default:false
+		}
+	},
+	data(){
+		return{
+			height : '42px'
+		}
+	},
+	created:function(){
+		var _self = this;
+		const res = uni.getSystemInfoSync();
+		this.height   = (Math.round((750 / res.screenWidth) * res.statusBarHeight))+"rpx";
+	}
+}
+</script>
+<style>
+    .statusBar{
+        flex-direction: column;
+        flex: 1;
+    }
+</style>

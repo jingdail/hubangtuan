@@ -56,7 +56,7 @@
 				<view class="uni-list-cell-db">
 					<picker @change="bindPickerChangeG" :value="goldindex" :range="goldarray">
 						<view class="uni-input">
-							{{goldarray[goldindex]}}
+							{{goldarray[goldindex]}} 
 							<text v-if="goldindex==null">为每人支付多少金币</text>
 						</view>
 					</picker>
@@ -161,6 +161,10 @@
 		computed: {
 			...mapState(['hasLogin']) //对全局变量进行监控
 			
+		},
+		onLoad() {
+			this.goldarray = uni.getStorageSync('tasksGold');
+			// this.tarray = uni.getStorageSync('tasksTime')
 		},
 		onShow:function(event){
 			
@@ -296,6 +300,7 @@
 				this.detail.typeinfo = event.target.value
 			},
 			nextstep: function() {
+				console.log("发布")
 				if(!this.hasLogin){
 					let currentPage = "/pages/fabu/fabu";
 					let url = '/pages/login/login?query='+encodeURIComponent(JSON.stringify(currentPage))

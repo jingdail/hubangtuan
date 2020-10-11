@@ -19,13 +19,19 @@
  * @type {String}
  */
 var postfix = '_mallStore'; // 缓存前缀 
+
+const simpleCache = {
+	postfix:postfix,
+}
+
 /**
  * 设置缓存 
  * @param  {[type]} k [键名]
  * @param  {[type]} v [键值]
  * @param  {[type]} t [时间、单位秒]
  */
-function put(k, v, t) {
+
+simpleCache.put = function(k,v,t){
     uni.setStorageSync(k, v) 
     var seconds = parseInt(t);
     if (seconds > 0) {
@@ -38,18 +44,20 @@ function put(k, v, t) {
 }
 
 
+
 /**
  * 获取缓存 
  * @param  {[type]} k   [键名]
  * @param  {[type]} def [获取为空时默认]
  */
-function get(k, def) {
+simpleCache.get = function(k, def) {
     var deadtime = parseInt(uni.getStorageSync(k + postfix)) 
     if (deadtime) {
         if (parseInt(deadtime) < Date.parse(new Date()) / 1000) {
             if (def) {
                 return def;
             } else {
+                uni.removeStorageSync(k + postfix)
                 return false;
             }
         }
@@ -60,12 +68,13 @@ function get(k, def) {
     } else {
         if (def == undefined  || def == "") {
             def = false; 
+            uni.removeStorageSync(k)
         }
         return def;
     }
 }
 
-function remove(k) {
+simpleCache.remove = function(k) {
     uni.removeStorageSync(k);
     uni.removeStorageSync(k + postfix);
 }
@@ -74,14 +83,8 @@ function remove(k) {
  * 清理所有缓存
  * @return {[type]} [description]
  */
-function clear() {
+simpleCache.clear = function () {
     uni.clearStorageSync();
 }
 
-
-module.exports = {
-    put: put,
-    get: get,
-    remove: remove,
-    clear: clear,
-}
+export default simpleCache

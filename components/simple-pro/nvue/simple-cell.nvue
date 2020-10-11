@@ -1,0 +1,118 @@
+<template>
+    <view :class="['bui-cell', hasTopBorder?'cell-top-border':'', hasBottomBorder?'cell-bottom-border':'', hasMargin?'cell-margin':'', desc?'has-desc':'']"
+            :style="Object.assign({}, cellStyle)"
+            @click="_cellClick">
+
+        <slot name="label">
+            <view v-if="label">
+                <text class="cell-label-text">{{label}}</text>
+            </view>
+        </slot>
+        <view class="cell-title">
+            <slot name="title">
+                <text class="cell-content" v-if="title">{{title}}</text>
+                <text class="cell-desc-text" v-if="desc">{{desc}}</text>
+            </slot>
+        </view>
+        <slot name="action"></slot>
+        <slot></slot>
+    </view>
+</template>
+
+<style scoped>
+    .bui-cell {
+        height: 100rpx;
+        position: relative;
+        flex-direction: row;
+        align-items: center;
+        padding-left: 24rpx;
+        padding-right: 24rpx;
+        background-color: #ffffff;
+    }
+
+    .cell-margin {
+        margin-bottom: 24rpx;
+    }
+
+    .cell-title {
+        flex: 1;
+    }
+
+    .has-desc {
+        padding-bottom: 18rpx;
+        padding-top: 18rpx;
+    }
+
+    .cell-top-border {
+        border-top-color: #eeeeee;
+        border-top-width: 1rpx;
+    }
+
+    .cell-bottom-border {
+        border-bottom-color: #eeeeee;
+        border-bottom-width: 1rpx;
+    }
+
+    .cell-label-text {
+        font-size: 30rpx;
+        color: #666666;
+        width: 188rpx;
+        margin-right: 10rpx;
+    }
+
+    .cell-content {
+        color: #333333;
+        font-size: 30rpx;
+        line-height: 40rpx;
+    }
+
+    .cell-desc-text {
+        color: #999999;
+        font-size: 24rpx;
+        line-height: 30rpx;
+        margin-top: 4rpx;
+    }
+</style>
+
+<script>
+    export default {
+        props: {
+            label: {
+                type: String,
+                default: ''
+            },
+            title: {
+                type: String,
+                default: ''
+            },
+            desc: {
+                type: String,
+                default: ''
+            },
+            hasTopBorder: {
+                type: Boolean,
+                default: false
+            },
+            hasMargin: {
+                type: Boolean,
+                default: false
+            },
+            hasBottomBorder: {
+                type: Boolean,
+                default: true
+            },
+            cellStyle: {
+                type: Object,
+                default () {
+                    return {};
+                }
+            }
+        },
+        methods: {
+            _cellClick (e) {
+                this.$emit('click', {e});
+                this.$emit('cellClick', {e});
+            }
+        }
+    };
+</script>

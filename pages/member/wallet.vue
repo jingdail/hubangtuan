@@ -8,13 +8,13 @@
 					<view class="btn" @click="tixian()">可提现0.0元</view>
 				</view>
 				<view class="goldNum">
-					<text class="jinbi">{{today_jinbu}}</text>
+					<text class="jinbi">{{TodayGold}}</text>
 					<view class="span">今日金币(个)</view>
 					<view class="btn" @click="chongzhi()">立即充值</view>
 				</view>
 			</view>
 		</view>
-		<view class="mingxiTitle"><text class="cuIcon-move"></text>明细<text class="cuIcon-move"></text></view>
+		<view class="mingxiTitle"><text class="cuIcon-move"></text>收支明细<text class="cuIcon-move"></text></view>
 		
 		<mescroll-body ref="mescrollRef" @init="mescrollInit"  @down="downCallback" :up="upOption"  @up="upCallback" @emptyclick="emptyClick">
 			<!-- 数据列表 --> 
@@ -147,13 +147,13 @@
 					},
 					noMoreSize: 4, 
 					empty:{
-						tip: '~ 搜索无数据 ~', // 提示
-						btnText: '去看看'
+						tip: '~ 暂无金币收支明细 ~', // 提示
+						btnText: '去充值'
 					}
 				},
 				dataList: [],
 				TotalGold:0,
-				today_jinbu:0
+				TodayGold:0
 				
 			}
 		},
@@ -182,9 +182,15 @@
 					// 接口返回的当前页数据列表 (数组)
 					console.log(res)
 					let curPageData = res.data.data
-					that.today_jinbu = res.data.jibi_day_num
+					if(res.data.jibi_day_num){
+						that.TodayGold = res.data.jibi_day_num
+					}else{
+						that.TodayGold = 0;
+					}
+					
 					console.log(res)
 					// 接口返回的当前页数据长度 (如列表有26个数据,当前页返回8个,则curPageLen=8)
+					if(curPageData==null){curPageData=[]}
 					let curPageLen = curPageData.length; 
 					// 接口返回的总页数 (如列表有26个数据,每页10条,共3页; 则totalPage=3)
 					// let totalPage = data.xxx; 
@@ -203,8 +209,22 @@
 			},
 			//点击空布局按钮的回调
 			emptyClick(){
-				uni.showToast({
-					title:'点击了按钮,具体逻辑自行实现'
+				uni.showModal({
+					title:"请选择充值或者发布任务",
+					cancelText:"发布任务",
+					confirmText:"去充值",
+					success: (res) => {
+						if(res.cancel){
+							uni.reLaunch({
+								url:"../index/index"
+							})
+						}
+						if(res.confirm){
+							uni.reLaunch({
+								url:"../member/chongzhi"
+							})
+						}
+					}
 				})
 			},
 			tixian:function(){

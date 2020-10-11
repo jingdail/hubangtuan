@@ -65,9 +65,12 @@
 		computed: {
 			...mapState(['hasLogin', 'openid', 'userinfo'])
 		},		
-		onLoad() {
+		onLoad(option) {
 			var that = this;
-			let HBTID = uni.getStorageSync('HBTID')
+			console.log(option.query)
+			let param = JSON.parse(option.query)
+			
+			let HBTID = param.id
 			var url = this.$Api('info');
 			this.$http.get(url,{id:HBTID},{isFactory: false}).then(function (res) {
 				that.detail = res.data.data

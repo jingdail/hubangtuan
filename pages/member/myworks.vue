@@ -26,8 +26,8 @@
 					},
 					noMoreSize: 4, 
 					empty:{
-						tip: '~ 搜索无数据 ~', // 提示
-						btnText: '去看看'
+						tip: '~ 暂无接单 ~', // 提示
+						btnText: '去接单'
 					}
 				},
 				dataList: [], //列表数据
@@ -59,6 +59,9 @@
 				this.$http.get(url,{pid:0},{isFactory: false}).then(function (res) {
 					// 接口返回的当前页数据列表 (数组)
 					console.log(res)
+					if(res.data.data == null){
+						res.data.data = [];
+					}
 					let curPageData = res.data.data
 					// 接口返回的当前页数据长度 (如列表有26个数据,当前页返回8个,则curPageLen=8)
 					let curPageLen = curPageData.length; 
@@ -79,8 +82,8 @@
 			},
 			//点击空布局按钮的回调
 			emptyClick(){
-				uni.showToast({
-					title:'点击了按钮,具体逻辑自行实现'
+				uni.reLaunch({
+					url:'../index/index'
 				})
 			},
 			

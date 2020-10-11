@@ -1,0 +1,102 @@
+<template>
+	<view :style="getContainerStyle()">
+		<view :key="index" v-for="(item,index) in tabItems" :style="getItemStyle(item, index)" @click="itemClick($event,item,index)">
+			<text v-if="item.title" :style="getTitleStyle(item, index)" @click.stop="itemClick($event,item,index)">{{ item.title }}</text>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		props: {
+			tabItems: {
+				default: []
+			},
+			value: {
+				type: Number,
+				default: 0
+			},
+			height: {
+				default: "100rpx"
+			},
+			iconSize: {
+				default: "45rpx"
+			},
+			titleSize: {
+				default: '22rpx'
+			},
+			background: {
+				default: '#f7f7f7'
+			},
+			selectedBackground: {
+				default: '#f7f7f7'
+			},
+			normalColor: {
+				default: '#818181'
+			},
+			selectedColor: {
+				default: '#4ca4fe'
+			},
+			borderBottomColor: {
+				default: '#4ca4fe'
+			},
+			containerStyle: {
+				default: function() {
+					return {}
+				}
+			},
+			itemStyle: {
+				default: function() {
+					return {}
+				}
+			},
+			showSelectedLine: {
+				default: false
+			}
+		},
+
+		methods: {
+			getContainerStyle() {
+				//合并样式
+				var style = {
+					'flex-direction': 'row',
+					'height': this.height
+				};
+				style = Object.assign(style, this.containerStyle);
+				return style;
+			},
+			getItemStyle(item, index) {
+				const selected = index === this.value;
+			
+				const backgroundColor = selected ? this.selectedBackground : this.background;
+			
+				const borderBottomColor = (selected && this.showSelectedLine) ? this.borderBottomColor : backgroundColor;
+			
+				const style = {
+					'flex': 1,
+					'align-items': 'center',
+					'justify-content': 'center',
+					'border-bottom-width': '5rpx',
+					'border-bottom-style': 'solid',
+					'border-bottom-color': borderBottomColor,
+					'backgroundColor': backgroundColor,
+				};
+				return Object.assign(style, this.itemStyle);
+				return style;
+			},
+			getTitleStyle(item, index) {
+				const selected = index === this.value;
+				var style = {
+					'color': selected ? this.selectedColor : this.normalColor,
+					'font-size': this.titleSize,
+				};
+				return style;
+			},
+			itemClick(e, item, index) {
+				this.value = index;
+				this.$emit('input', index);
+				this.$emit('change', index);
+			}
+		}
+	}
+</script>

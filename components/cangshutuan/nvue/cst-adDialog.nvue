@@ -1,0 +1,87 @@
+<template>
+	<view>
+		<uni-popup ref="popup" :maskClick="false">
+			<view class="search-dialog" v-bind:style="{ width: img_width }">
+				<image class="search-dialog-image" v-bind:style="{ width: img_width, height: img_height }" @click="clickPicture" :src="picture"></image>
+				<view class="close" @click="closeDialog"><image src="/static/img/home_search_tc_close.png" class="closeImage"></image></view>
+			</view>
+		</uni-popup>
+	</view>
+</template>
+
+<script>
+let popupView = null;
+import uniPopup from '@/components/uni-ui/uni-popup/uni-popup.vue';
+var bannerData = {};
+export default {
+	data() {
+		return {
+			picture: '',
+			img_width: '',
+			img_height: ''
+		};
+	},
+	components: {
+		uniPopup
+	},
+	methods: {
+		open(data) {
+			console.log('获取到AD', data);
+			this.picture = data.picture || '';
+			bannerData = data;
+			if (bannerData.params && bannerData.params.img_width) {
+				this.img_width = bannerData.params.img_width.replace('px', 'rpx');
+				this.img_height = bannerData.params.img_height.replace('px', 'rpx');
+			}
+			// 用plus 画一个view 遮住底部
+			// popupView = new plus.nativeObj.View('simpleMaskLayer', {
+			// 	//先创建遮罩层
+			// 	bottom: '0px',
+			// 	left: '0px',
+			// 	height: '56px',
+			// 	width: '100%',
+			// 	backgroundColor: 'rgba(0,0,0,0.4)'
+			// });
+			// popupView.show();
+			this.$refs.popup.open();
+		},
+		clickPicture() {
+			getApp().globalData.request.navigateTo({
+				target: bannerData.target,
+				url: bannerData.link,
+				title: bannerData.title,
+				desc: bannerData.desc_info,
+				param: bannerData.params,
+				hasLogin: bannerData.hasLogin || 0
+			});
+			//popupView.hide();
+			this.$refs.popup.close();
+		},
+		closeDialog() {
+			//popupView.hide();
+			this.$refs.popup.close();
+		} 
+	}
+};
+</script>
+
+<style>
+.search-dialog {
+	flex: 1;
+}
+.search-dialog-image {
+	background-color: transparent;
+}
+.close {
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+}
+.closeImage {
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+	width: 72rpx;
+	height: 72rpx;
+}
+</style>

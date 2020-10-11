@@ -54,8 +54,8 @@
 					},
 					noMoreSize: 4, 
 					empty:{
-						tip: '~ 搜索无数据 ~', // 提示
-						btnText: '去看看'
+						tip: '~ 没有发布任务 ~', // 提示
+						btnText: '去发布任务'
 					}
 				},
 				dataList: [], //列表数据
@@ -64,16 +64,6 @@
 				cateid:0,//当前分类ID
 				info:"close"
 			}
-		},
-		onReady() {
-			uni.showTabBarRedDot({
-				index:3,
-				success() {					
-				},
-				fail() {
-					console.log('blue')
-				}
-			})
 		},
 		methods: { 
 			closeRenwu(e,id){
@@ -131,8 +121,12 @@
 				var that = this;
 				this.$http.get(url,{},{isFactory: false}).then(function (res) {
 					// 接口返回的当前页数据列表 (数组)					
+					
 					let curPageData = res.data.data
 					console.log(curPageData)
+					if(curPageData==null){
+						curPageData=[]
+					}
 					// 接口返回的当前页数据长度 (如列表有26个数据,当前页返回8个,则curPageLen=8)
 					let curPageLen = curPageData.length; 
 					// 接口返回的总页数 (如列表有26个数据,每页10条,共3页; 则totalPage=3)
@@ -152,8 +146,8 @@
 			},
 			//点击空布局按钮的回调
 			emptyClick(){
-				uni.showToast({
-					title:'点击了按钮,具体逻辑自行实现'
+				uni.reLaunch({
+					url:'../fabu/fabu'
 				})
 			}
 		}

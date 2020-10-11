@@ -1,0 +1,574 @@
+<template>
+	<view class="new-home" style="height: 1px;">
+		<view class="header-home" ref="app_bar" elevation="2px">
+			
+			<view class="new-home-top-nav">
+				<scroll-view class="category-scroll" :scroll-left="navScorllLeft" scroll-direction="horizontal" :show-scrollbar="false" :scroll-x="true">
+					<view class="category-tab-item" :ref="'navItem' + index" v-for="(item, index) in tabItems" :key="index" :id="item.id" @click="ontabtap(index)">
+						<text class="category-tab-item-title" :class="currentTab == index ? 'category-tab-item-title-active' : ''">{{ item.title }}</text>
+					</view>
+				</scroll-view>
+			</view>
+		</view>
+
+		<swiper :current="currentTab" class="swiper-box" :duration="300" @change="ontabchange">
+			<swiper-item class="swiper-item" v-for="(tab, index1) in tabItems" :key="index1">
+				<waterfall
+					class="scroll-v"
+					column-count="1"
+					column-gap="7"
+					left-gap="7"
+					right-gap="7"
+					enableBackToTop="true"
+					:show-scrollbar="false"
+					loadmoreoffset="15"
+					@loadmore="loadMore(index1)"
+					@scroll="swiperScroll"
+					ref="waterfallRef"
+				>
+					<cstRefresh :loadingType="text" @refresh="onrefresh(index1)" :refreshing="tab.refreshing" @pullingdown="onpullingdown" :refreshText="tab.refreshText"></cstRefresh>
+					
+
+					<cell v-for="(item, index) in tab.data" :key="index" class="s-tab-list-cell">
+						<cstProductItem @detail="detail" :item="item" :index="index"></cstProductItem>
+					</cell>
+
+					<header class="tui-refresh" v-if="tab.isLoading || tab.data.length > 4">
+						<text class="refresh-text" style="color: #555;font-size:12px;text-align: center;margin-bottom: 5px;">- {{tab.loadingText}} -</text>
+					</header>
+				</waterfall>
+			</swiper-item>
+		</swiper>
+
+	
+	</view>
+</template>
+
+<script>
+import cstProductItem from '@/components/cangshutuan/nvue/cst-product-item.nvue';
+import cstRefresh from '@/components/cangshutuan/nvue/cst-refresh.nvue';
+import { mapState, mapMutations } from 'vuex';
+const _Dom = weex.requireModule('dom');
+import mixins from './config/indexmixins.js';
+
+// 缓存每页最多
+const MAX_CACHE_DATA = 100;
+// 缓存页签数量
+const MAX_CACHE_PAGE = 3;
+let hasOnload = false;
+export default {
+	data() {
+		return {
+			statusBarHeight: '44rpx',
+			currentTab: 0,
+			tabItems: [],
+			cacheTab: [],
+			
+			showHeader: true,
+			navScorllLeft: 0,
+			getHomeTopIcon: {
+				leftIcon: '',
+				rightIcon: ''
+			},
+			activity: []
+		};
+	},
+	components: {
+		cstRefresh,
+		cstProductItem
+	},
+	computed: {
+		...mapState(['hasLogin', 'userinfo', 'openid'])
+	},
+	onLoad() {		
+		hasOnload = true;
+	},
+	onShow() {
+		if (hasOnload) {
+			//this.getClipboardDataKeywords(); // 获取剪切板内容 实现超级搜索
+		}
+	},
+	mixins: [mixins],
+	methods: {
+		async getList(index, action = 1) {
+			let activeTab = this.tabItems[index];
+			activeTab.loadingText = '数据加载中...';
+			if (activeTab.isLoading) {
+				return;
+			}
+			if (action === 1) {
+				activeTab.page = 1;
+			}
+			activeTab.isLoading = true;
+			try {
+				var post = {
+					page: activeTab.page,
+					limit: activeTab.limit,
+					typeid: activeTab.id,
+					source: 'home'
+				};
+				const res = await getApp().globalData.request.post('https://api.hubangtuan.cn/index/lists/', post);
+                console.log(res)
+				activeTab.isLoading = false;
+				if (action === 1) {
+					activeTab.data = [];
+				}
+
+				if (res.error =="0") {
+                    
+					if(res.data.length>0){
+						activeTab.loadingText = '加载完成';
+						res.data.forEach(item => {
+							if (item.id) {
+								activeTab.data.push({
+									id: this.newGuid() + item.id,
+									goods_picture: item.avatarurl,
+									goods_dtitle: item.title,
+									goods_title: item.title,
+									goods_sale: "100",
+									coupon_money: "item.coupon_money",
+									goods_type: "item.goods_type",
+									goods_price: "item.goods_price",
+									goods_yprice: "item.goods_yprice",
+									goods_numiid: item.id,
+									goods_info: item.goods_info,
+									tkrates: item.tkrates,
+									goods_todaysale: item.goods_todaysale,
+									tkmoney: item.tkmoney,
+									goods_shoptype: item.goods_shoptype
+								});
+							} else {
+								activeTab.data.push(item);
+							}
+						});
+						activeTab.refreshing = false;
+						
+					}else{
+						activeTab.isLoading = true;
+						activeTab.loadingText = '没有更多了';
+						
+					}
+					if(res.data==null){
+						activeTab.isLoading = true;
+						activeTab.loadingText = '没有更多了';
+					}
+                    
+				}
+			} catch (e) {
+				activeTab.isLoading = false;
+				activeTab.refreshing = false;
+			}
+
+			if (action == 1) {
+				activeTab.refreshing = false;
+				activeTab.refreshText = '已刷新';
+				activeTab.refreshFlag = false;
+				setTimeout(() => {
+					// TODO fix ios和Android 动画时间相反问题
+					this.pulling = false;
+				}, 500);
+			}
+			setTimeout(r => {
+				activeTab.refreshing = false;
+			}, 3000);
+		},
+		detail(e) {
+			this.navigatorTo(`/pages/detail/goodsinfo?itemid=${e.itemid}&goods_type=${e.goods_type}`);
+		},
+		newGuid() {
+			let s4 = function() {
+				return ((65536 * (1 + Math.random())) | 0).toString(16).substring(1);
+			};
+			return (s4() + s4() + '-' + s4() + '-4' + s4().substr(0, 3) + '-' + s4() + '-' + s4() + s4() + s4()).toUpperCase();
+		},
+		loadMore(e) {
+			var activeTab = this.tabItems[this.currentTab];
+			activeTab.page = activeTab.page + 1;
+			this.getList(this.currentTab, 2);
+		},
+		onrefresh(e) {
+			var tab = this.tabItems[this.currentTab];
+			if (!tab.refreshFlag) {
+				return;
+			}
+			tab.refreshing = true;
+			tab.refreshText = '正在刷新...';
+			this.pulling = true;
+			this.getList(this.currentTab);
+			console.log("正在刷新...")
+		},
+		onpullingdown(e) {
+			var tab = this.tabItems[this.currentTab];
+			if (tab.refreshing || this.pulling) {
+				return;
+			}
+			if (Math.abs(e.pullingDistance) > Math.abs(e.viewHeight)) {
+				tab.refreshFlag = true;
+				tab.refreshText = '释放立即刷新';
+			} else {
+				tab.refreshFlag = false;
+				tab.refreshText = '下拉可以刷新';
+			}
+		},
+		async scrollNavBar(index) {
+			let sizeData = await this.getNavRect(this.$refs['navItem' + index][0]);
+			var offset = index * sizeData.width;
+			this.navScorllLeft = offset;
+		},
+		//获取navbar位置信息
+		getNavRect(ref) {
+			return new Promise(resolve => {
+				_Dom.getComponentRect(ref, option => {
+					resolve(option.size);
+				});
+			});
+		},
+		switchTab(index) {
+			this.scrollNavBar(index);
+			if (this.tabItems[index].data.length === 0) {
+				this.getList(index);
+			}
+			if (this.currentTab === index) {
+				return;
+			}
+			// 缓存 tabId
+			if (this.tabItems[this.currentTab].data.length > MAX_CACHE_DATA) {
+				let isExist = this.cacheTab.indexOf(this.currentTab);
+				if (isExist < 0) {
+					this.cacheTab.push(this.currentTab);
+				}
+			}
+			this.currentTab = index;
+			// 释放 tabId
+			if (this.cacheTab.length > MAX_CACHE_PAGE) {
+				let cacheIndex = this.cacheTab[0];
+				this.clearTabData(cacheIndex);
+				this.cacheTab.splice(0, 1);
+			}
+		},
+		clearTabData(e) {
+			this.tabItems[e].data.length = 0;
+			this.tabItems[e].loadingText = '加载更多...';
+		},
+		ontabtap(index) {
+			this.switchTab(index);
+		},
+		ontabchange(e) {
+			let index = e.target.current || e.detail.current;
+			this.switchTab(index);
+		},
+		toCategory(item) {
+			getApp().globalData.request.navigateTo({
+				target: item.target,
+				url: item.link,
+				title: item.title,
+				desc: item.desc_info,
+				param: item.params,
+				hasLogin: item.hasLogin || 0
+			});
+		},
+		darenDetail(item) {
+			this.navigatorTo(`/pages/daren/daren?id=${item.id}`);
+		},
+		navigatorTo(url) {
+			uni.navigateTo({
+				url: url
+			});
+		},
+		wap_sigin() {
+			if (this.hasLogin == false) {
+				this.navigatorTo('/pages/member/ucenter/signIn');
+			} else {
+				this.navigatorTo('/pages/member/agent/checkin');
+			}
+		},
+		wap_search() {
+			this.navigatorTo('/pages/search/index');
+		},
+		bannerAdvertLowerChange(e) {
+			const { current } = e.detail;
+			this.bannerAdvertLowerCurr = current;
+		},
+		swiperScroll(e) {
+			var contentOffset = e.contentOffset;
+			var tab = this.tabItems[this.currentTab];
+			if (contentOffset.y < (this.currentTab == 0 ? -380 : -100)) {
+				tab.showHeader = false;
+			} else {
+				tab.showHeader = true;
+			}
+		}
+	}
+};
+</script>
+
+<style lang="less">
+.new-home {
+	flex: 1;
+	flex-direction: column;
+
+	background-color: #f6f6f6;
+}
+
+.header-home {
+	background-color: #ffffff;
+}
+.tui-refresh{
+	text-align: center;
+	font-size: 12px;
+}
+.index_header {
+	margin-top: 10rpx;
+	margin-bottom: 10rpx;
+	margin-left: 10rpx;
+	margin-right: 10rpx;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	flex-wrap: nowrap;
+}
+.wap_left_icon {
+	width: 100rpx;
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+}
+.wap_left_icon-image {
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+	width: 70rpx;
+	height: 70rpx;
+}
+.wap_center_search {
+	flex: 1;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	flex-wrap: nowrap;
+}
+.wap_search_icon {
+	height: 70rpx;
+	line-height: 70rpx;
+	flex: 1;
+	background-color: #f1f1f1;
+	color: #565656;
+	border-radius: 50rpx;
+	padding-left: 20rpx;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	flex-wrap: nowrap;
+	font-size: 28rpx;
+}
+.wap_right_icon {
+	width: 120rpx;
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+}
+.wap_right_icon-image {
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+	width: 70rpx;
+	height: 70rpx;
+}
+
+/*分类*/
+.new-home-top-nav {
+	flex-direction: row;
+	flex-wrap: nowrap;
+	height: 80rpx;
+}
+.new-home-top-nav-move {
+	width: 100rpx;
+	text-align: center;
+	height: 80rpx;
+	line-height: 80rpx;
+}
+.new-home-top-nav-move-text {
+	width: 100rpx;
+	color: #eb3f43;
+	font-size: 34rpx;
+	height: 80rpx;
+	line-height: 80rpx;
+	font-weight: bold;
+	text-align: center;
+}
+.category-scroll {
+	width: 750rpx;
+	height: 200rpx;
+	flex-direction: row;
+}
+.category-tab-item {
+	flex-wrap: nowrap;
+	text-align: center;
+	// width: 100rpx;
+	
+	// background-color: #007AFF;
+}
+.category-tab-item-title {
+	// width: 100rpx;
+	padding:0 20rpx;
+	text-align: center;
+	color: #565656;
+	//color: rgba(255, 255, 255, 0.65);
+	font-size: 32rpx;
+	height: 200rpx;
+	line-height: 80rpx;
+}
+.category-tab-item-title-active {
+	color: #eb3f43;
+	border-bottom-color: #eb3f43;
+	border-bottom-width: 4rpx;
+}
+.scroll-v {
+	flex: 1;
+	flex-direction: column;
+}
+.swiper-box {
+	flex: 1;
+}
+.swiper-item {
+	flex: 1;
+	flex-direction: column;
+}
+
+/*小宫格导航*/
+.nav-swiper-item {
+	flex-wrap: wrap;
+	flex-direction: row;
+	background-color: #ffffff;
+	padding-top: 5rpx;
+}
+.nav-swiper {
+	flex: 1;
+	background-color: #ffffff;
+	height: 360rpx;
+}
+.nav-item {
+	padding-top: 20rpx;
+	width: 150rpx;
+	align-items: center;
+}
+.nav-item-image {
+	width: 90rpx;
+	height: 90rpx;
+}
+.nav-item-text {
+	line-height: 60rpx;
+	height: 60rpx;
+	text-align: center;
+	font-size: 26rpx;
+	padding-top: 10rpx;
+	color: #515a6e;
+	lines: 1;
+}
+
+.swiper-pagination {
+	padding-top: 20rpx;
+	padding-bottom: 10rpx;
+	background-color: #ffffff;
+}
+
+.cst-swiper-dots-item {
+	width: 30rpx;
+	height: 6rpx;
+	background-color: #c5c8ce;
+}
+.cst-swiper-dots-item-curr {
+	background-color: #f23c39;
+}
+
+/*广告位banner*/
+.swiper-banner {
+	height: 310rpx;
+	background-color: #f2f2f2;
+}
+.swiper-banner-item {
+	flex: 1;
+	height: 310rpx;
+}
+.swiper-banner-item-image {
+	flex: 1;
+
+	height: 310rpx;
+}
+
+/*头条*/
+.toutiao {
+	background-color: #ffffff;
+}
+.toutiao-box {
+	margin: 15rpx;
+	width: 710rpx;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	background-color: #f6f6f6;
+	border-radius: 10rpx;
+}
+.toutiao-logo {
+	margin-right: 16rpx;
+	padding: 15rpx;
+}
+.toutiao-logo-image {
+	width: 118rpx;
+	height: 30rpx;
+}
+.toutiao-youjiantou {
+	width: 30rpx;
+	padding: 15rpx;
+	padding-left: 0rpx;
+}
+.toutiao-youjiantou-text {
+	width: 30rpx;
+	height: 30rpx;
+	line-height: 30rpx;
+	text-align: left;
+}
+.toutiao-swiper-slider {
+	width: 602rpx;
+	flex: 1;
+	height: 60rpx;
+	border-left-color: #f6f6f6;
+	border-left-width: 2rpx;
+	border-style: solid;
+}
+.toutiao-swiper-slider-item {
+	flex: 1;
+}
+.toutiao-swiper-slider-item-text {
+	height: 60rpx;
+	line-height: 60rpx;
+	font-size: 26rpx;
+	lines: 1;
+}
+
+/*发现好货文字*/
+.find_product_bg {
+	margin-top: 20rpx;
+	height: 40rpx;
+}
+.find_product_bg_text {
+	font-size: 26rpx;
+	color: #333333;
+	height: 40rpx;
+	line-height: 40rpx;
+	margin: 0 10rpx;
+}
+
+/*首页进行中的活动*/
+.home_activity {
+	background-color: #ffffff;
+}
+.home_activity_top-one {
+	flex: 1;
+}
+.home_activity_top-tow {
+	flex-direction: row;
+	flex-wrap: wrap;
+	padding-left: 15rpx;
+	padding-right: 15rpx;
+}
+</style>

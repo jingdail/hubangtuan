@@ -139,7 +139,7 @@
 						})
 						setTimeout(function(){
 							uni.redirectTo({
-								url:'/pages/member/renwu'
+								url:'/pages/index/index'
 							})
 						},2000)
 					}else{
@@ -148,16 +148,24 @@
 							cancelText:'取消',
 							confirmText:'确定',
 							success: (e) => {
-								console.log(e)
+								if (e.confirm) {
+									console.log('金币不足')
+									uni.navigateTo({url:"../member/chongzhi"});
+									// return false;
+									
+								} else if (res.cancel) {
+									console.log('用户点击取消');
+								}
+								
 							}
 						})
-						return false;
+						
 					}
 				}).catch(function (error) {
 				    //这里只会在接口是失败状态返回，不需要去处理错误提示
 				    console.log(error);
 				});
-				this.$queue.showToast('发布成功');
+				
 			}
 	    }
 	}

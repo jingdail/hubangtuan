@@ -1,0 +1,145 @@
+<template>
+	<view class="btn-block" :style="exBtnStyle" @longpress="_longPress" @click="_click">
+		<slot></slot>
+		<text class="btn-text" :style="exTextStyle" v-if="value!=''">{{value}}</text>
+	</view>
+</template>
+
+<style>
+	.btn-block {
+		width: 700rpx;
+		height: 88rpx;
+		align-items: center;
+		justify-content: center;
+		border-radius: 10rpx;
+		flex-direction: row;
+	}
+
+	.btn-text {
+		text-overflow: ellipsis;
+		lines: 1;
+		font-size: 36rpx;
+		color: #FFFFFF;
+	}
+</style>
+
+<script>
+	/**  
+	 * 按钮组件  
+	 * @description 按钮组件  
+	 * @property {String} value 按钮文字  
+	 * @property {String} type	按钮类型 default/ text/highlight/primary /success/warning/danger
+	 * @property {String} type	按钮类型 default/ text/highlight/primary /success/warning/danger
+	 * @property {Boolean} disabled	按钮是否可用：true/false
+	 * @property {Object} btnStyle	按钮样式扩展对象
+	 * @property {Object} textStyle	按钮文本样式扩展对象
+	 * @property {String} size 按钮大小 default / small / large  
+	 * @event {Function} click 按钮点击事件
+	 * @event {Function} longpress 按钮长按事件
+	 * @example <simpleButton value="点我 快点我" @click=""></simpleButton>  
+	 */
+	const STYLE_MAP = {
+		default: {
+			backgroundColor: '#FFFFFF',
+			borderColor: '#A5A5A5',
+			borderWidth: '1rpx'
+		},
+		text: {
+			borderWidth: '0rpx'
+		},
+		highlight: {
+			backgroundColor: '#FFFFFF',
+			borderColor: '#EE9900',
+			borderWidth: '1rpx'
+		},
+		primary: {
+			backgroundColor: '#3399ff'
+		},
+		success: {
+			backgroundColor: '#00cc66'
+		},
+		warning: {
+			backgroundColor: '#ff9900'
+		},
+		danger: {
+			backgroundColor: '#ff4e24'
+		}
+	};
+
+	const TEXT_STYLE_MAP = {
+		default: {
+			color: '#3D3D3D'
+		},
+		text: {
+			color: '#3D3D3D'
+		},
+		highlight: {
+			color: '#EE9900'
+		},
+		primary: {
+			color: '#ffffff'
+		},
+		success: {
+			color: '#ffffff'
+		},
+		warning: {
+			color: '#ffffff'
+		},
+		danger: {
+			color: '#ffffff'
+		}
+	};
+
+	export default {
+		props: {
+			value: {
+				type: String,
+				default: ''
+			},
+			type: {
+				type: String,
+				default: 'default'
+			},
+			disabled: {
+				type: Boolean,
+				default: false
+			},
+			btnStyle: Object,
+			textStyle: Object
+		},
+		computed: {
+			exBtnStyle() {
+				const {
+					type,
+					disabled,
+					btnStyle
+				} = this;
+
+				const exBtnStyle = Object.assign(STYLE_MAP[type], btnStyle);
+				return disabled ? Object.assign({}, exBtnStyle, {
+					backgroundColor: 'rgba(0, 0, 0, 0.1)',
+					borderWidth: 0
+				}) : exBtnStyle;
+			},
+			exTextStyle() {
+				const {
+					type,
+					disabled,
+					textStyle
+				} = this;
+				const exTextStyle = Object.assign(TEXT_STYLE_MAP[type], textStyle);
+				return disabled ? Object.assign({}, exTextStyle, {
+					color: '#ffffff'
+				}) : exTextStyle;
+			}
+		},
+		methods: {
+			_click(e) {
+				if (!this.disabled) this.$emit('click', e)
+			},
+			_longPress(e) {
+				if (!this.disabled) this.$emit('longpress', e)
+			}
+		}
+	}
+</script>

@@ -1,6 +1,6 @@
 <template>
     <view>
-        <web-view :webview-styles="webviewStyles" src="../../static/yinsi.html"></web-view>
+        <web-view :webview-styles="webviewStyles" src="https://api.hubangtuan.cn/frame/yinsi.html"></web-view>
     </view>
 </template>
 

@@ -3,7 +3,7 @@
 		<view class="cover-container" style="margin-top: 10px;">
 			<view class="history-section icon">	
 			<list-cell icon="cuIcon-notification" title="系统公告" @eventClick="navTo('/pages/message/sys')" tips=""></list-cell>				
-			<list-cell icon="cuIcon-notification" title="任务通知" @eventClick="navTo('/pages/member/notice')" tips="" badge="cuIcon-title"></list-cell>				
+			<list-cell icon="cuIcon-notification" title="任务通知" @eventClick="navTo('/pages/message/renwu')" tips="" badge="cuIcon-title"></list-cell>				
 					
 				
 			</view>

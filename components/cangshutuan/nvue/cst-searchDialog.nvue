@@ -1,0 +1,342 @@
+<template>
+	<view class="">
+		<uni-popup ref="popup" :maskClick="false">
+			<template v-if="params.type == 'goods'">
+				<view class="search-goods">
+					<view class="search-goods-header"><text class="search-goods-header-text s-center">您可能想买</text></view>
+					<view class="search-goods-content">
+						<view class="s-nowrap">
+							<image :src="params.picture" class="goods-picture"></image>
+							<view class="goods-info s-columns">
+								<text class="goods-title">{{ params.title }}</text>
+								<view class="goods-info-footer">
+									<view class="goods-price s-nowrap s-flex-vcenter">
+										<text class="goods-price-icon">￥</text>
+										<text class="goods-price-text">{{ params.price }}</text>
+									</view>
+									<view class="goods-price s-nowrap s-flex-vbottom">
+										<text class="tui-product-tag-tkmoney">奖￥{{ params.tkmoney }}</text>
+										<text class="tui-product-tag-coupon" v-if="params.couponMoney > 0">券￥{{ params.couponMoney }}</text>
+									</view>
+								</view>
+							</view>
+						</view>
+					</view>
+					<view class="search-goods-footer">
+						<text class="left-btn-text" @click="closeSearch">取消</text>
+						<text class="right-btn-text" @click="toDetail()">立即查看</text>
+					</view>
+				</view>
+			</template>
+			<template v-else>
+				<view class="search-dialog">
+					<view class="search-dialog-box">
+						<image class="search-dialog-image" src="/static/img/ic_copy_search_top.png"></image>
+						<view class="search-dialog-content">
+							<list scroll-y class="search-dialog-scroll-view" :show-scrollbar="false">
+								<cell>
+									<text class="search-dialog-content-text">{{ params.keywords }}</text>
+								</cell>
+							</list>
+						</view>
+						<view class="search-dialog-menu">
+							<view class="search-dialog-platform">
+								<view class="s-nowrap s-flex-vcenter s-flex-center">
+									<text class="search-text-border"></text>
+									<text class="search-text-border-tips">搜索平台</text>
+									<text class="search-text-border"></text>
+								</view>
+								<view class="search-dialog-platform-list">
+									<view class="s-nowrap s-space-between search-dialog-platform-list-item" v-for="(item, index) in platform" :key="index">
+										<view class="s-columns s-flex-vcenter" v-for="(val, ikey) in item" :key="ikey" @click="searchQuanWang(val.type)">
+											<image :src="val.icons" class="search-icons"></image>
+											<text class="s-desc s-black6">{{ val.text }}</text>
+										</view>
+									</view>
+								</view>
+							</view>
+						</view>
+					</view>
+					<view class="search-dialog-close" @click="closeSearch"><image class="search-dialog-image-close" src="/static/img/home_search_tc_close.png"></image></view>
+				</view>
+			</template>
+		</uni-popup>
+	</view>
+</template>
+<script>
+import uniPopup from '@/components/uni-ui/uni-popup/uni-popup.vue';
+const clipboard = weex.requireModule('clipboard');
+let popupView = null;
+let platform = [
+	[
+		{
+			icons: '/static/img/newIndex/ic_search_logo_taobao.png',
+			text: '淘宝天猫',
+			type: 'taobao'
+		},
+		{
+			icons: '/static/img/newIndex/ic_search_logo_jd.png',
+			text: '京东',
+			type: 'jd'
+		},
+		{
+			icons: '/static/img/newIndex/ic_search_logo_pdd.png',
+			text: '拼多多',
+			type: 'taobao'
+		}
+	],
+	[
+		{
+			icons: '/static/img/newIndex/suning_icon.png',
+			text: '苏宁易购',
+			type: 'suning'
+		},
+		{
+			icons: '/static/img/newIndex/kaola_logo.png',
+			text: '考拉',
+			type: 'kaola'
+		},
+		{
+			icons: '/static/img/newIndex/ic_search_logo_vip.png',
+			text: '唯品会',
+			type: 'vip'
+		}
+	]
+];
+export default {
+	data() {
+		return {
+			params: {},
+			platform: platform
+		};
+	},
+	components: {
+		uniPopup
+	},
+	methods: {
+		open(params) {
+			this.params = params;
+			console.log('超级搜索', params);
+			// 用plus 画一个view 遮住底部
+			// popupView = new plus.nativeObj.View('simpleMaskLayer', {
+			// 	//先创建遮罩层
+			// 	bottom: '0px',
+			// 	left: '0px',
+			// 	height: '56px',
+			// 	width: '100%',
+			// 	backgroundColor: 'rgba(0,0,0,0.4)'
+			// });
+			// popupView.show();
+			this.$refs.popup.open();
+			clipboard.setString('');
+		},
+		closeSearch() {
+			//popupView && popupView.hide();
+			this.$refs.popup.close();
+		},
+		toDetail() {
+			this.closeSearch();
+			uni.navigateTo({
+				url: `/pages/detail/goodsinfo?itemid=${this.params.goods_numiid}&goods_type=${this.params.goods_type}`
+			});
+		},
+		searchQuanWang(type) {
+			// console.log(type);
+			// return;
+			var keywords = this.params.keywords;
+
+			uni.navigateTo({
+				url: `/pages/search/goods_list?keywords=${keywords}&title=超级搜索`,
+				success: () => {
+					this.closeSearch();
+				}
+			});
+		}
+	}
+};
+</script>
+
+<style>
+/*商品搜索*/
+.search-goods {
+	width: 600rpx;
+	background-color: #ffffff;
+	border-radius: 15rpx;
+}
+.search-goods-header {
+	padding: 20rpx;
+}
+.search-goods-header-text {
+	font-size: 34rpx;
+	color: #eb3f43;
+}
+.search-goods-content {
+	background-color: #fafafa;
+	padding: 40rpx 15rpx;
+}
+.goods-picture {
+	width: 210rpx;
+	height: 210rpx;
+	border-radius: 10rpx;
+}
+.goods-info {
+	margin-left: 15rpx;
+}
+.goods-info-footer {
+	width: 350rpx;
+	align-items: flex-start;
+	justify-content: flex-start;
+
+}
+.goods-title {
+	width: 350rpx;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	lines: 3;
+	font-size: 30rpx;
+	color: #333333;
+}
+.goods-price {
+	margin-top: 10rpx;
+}
+.goods-price-icon {
+	font-size: 26rpx;
+	color: #eb3f43;
+}
+.goods-price-text {
+	font-size: 36rpx;
+	color: #eb3f43;
+}
+.tui-product-tag-coupon {
+	font-size: 26rpx;
+	font-weight: 500;
+	color: #ffffff;
+	justify-content: flex-start;
+	padding: 3rpx 8rpx;
+	font-family: PingFangSC-Regular;
+	background-image: linear-gradient(to right, #f75e32, #f23c39);
+	border-radius: 8rpx;
+}
+.tui-product-tag-tkmoney {
+	font-size: 26rpx;
+	font-weight: 500;
+	color: #ff0100;
+	justify-content: flex-start;
+	padding: 3rpx 8rpx;
+	font-family: PingFangSC-Regular;
+	background-color: rgba(255, 243, 243, 1);
+	border-width: 1rpx;
+	border-style: solid;
+	border-color: rgba(255, 197, 199, 1);
+	border-radius: 8rpx;
+	margin-right: 20rpx;
+}
+.search-goods-footer {
+	width: 600rpx;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	background-color: #ffffff;
+	border-bottom-right-radius: 15rpx;
+	border-bottom-left-radius: 15rpx;
+}
+.left-btn-text {
+	height: 100rpx;
+	line-height: 100rpx;
+	width: 300rpx;
+	text-align: center;
+	border-top-color: #f6f6f6;
+	border-top-width: 2rpx;
+	border-right-color: #f6f6f6;
+	border-right-width: 3rpx;
+	font-size: 34rpx;
+	color: #7d7c7b;
+}
+.right-btn-text {
+	height: 100rpx;
+	line-height: 100rpx;
+	width: 300rpx;
+	text-align: center;
+	border-top-color: #f6f6f6;
+	border-top-width: 2rpx;
+	font-size: 34rpx;
+	color: #eb3f43;
+}
+
+.search-dialog {
+	width: 544rpx;
+}
+.search-dialog-box {
+	background-color: #ffffff;
+	border-radius: 20rpx;
+}
+.search-dialog-image {
+	width: 544rpx;
+	height: 214rpx;
+	background-color: transparent;
+}
+.search-dialog-content {
+	padding: 30rpx;
+	background-color: #ffffff;
+	padding-bottom: 0rpx;
+}
+.search-dialog-scroll-view {
+	width: 484rpx;
+	height: 130rpx;
+}
+.search-dialog-content-text {
+	color: #666666;
+	font-size: 30rpx;
+	text-align: center;
+	flex: 1;
+}
+.search-dialog-menu {
+	background-color: #ffffff;
+	border-bottom-right-radius: 20rpx;
+	border-bottom-left-radius: 20rpx;
+	padding: 20rpx;
+}
+.search-text-border-tips {
+	color: #999999;
+	font-size: 26rpx;
+	padding-right: 15rpx;
+	padding-left: 15rpx;
+}
+.search-text-border {
+	width: 180rpx;
+	height: 2rpx;
+	background-color: #f2f2f2;
+}
+.search-dialog-platform-list {
+	padding-left: 40rpx;
+	padding-right: 40rpx;
+	margin-top: 20rpx;
+}
+.search-dialog-platform-list-item {
+	margin-bottom: 10rpx;
+}
+.search-icons {
+	width: 64rpx;
+	height: 64rpx;
+}
+/* .search-dialog-menu-text {
+	background-image: linear-gradient(to left, #fa3e4f, #fba53f);
+	text-align: center;
+	border-radius: 50rpx;
+	padding: 15rpx 5rpx;
+	color: #ffffff;
+} */
+.search-dialog-close {
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+}
+.search-dialog-image-close {
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+	margin-top: 20rpx;
+	width: 72rpx;
+	height: 72rpx;
+}
+</style>

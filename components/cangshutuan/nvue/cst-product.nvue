@@ -1,0 +1,211 @@
+<template>
+	<view class="product">
+		<view
+			v-for="(item, index) in product"
+			:key="index"
+			class="tui-product"
+			:class="[index === 0 || index === 1 ? 'tui-mtop' : '']"
+			@click="detail(item)"
+			:ref="'listItem' + index"
+		>
+			<view class="image-view">
+				<image class="tui-product-image" :src="item.goods_picture" placeholder="/static/img/ic_default_placeholder.png" resize="cover"></image>
+				<!-- 				<view class="none" v-if="index === 0"><text class="none-tip">点击售罄返回</text></view> -->
+			</view>
+			<view class="product-content-box">
+				<view class="tui-product-title">
+					<text class="product-title">{{ item.goods_dtitle }}</text>
+				</view>
+				<view class="tui-product-tag"><text class="tui-product-tag-coupon">3元券</text></view>
+
+				<view class="tui-product-price">
+					<view class="tui-product-price-original-box">
+						<text class="tui-product-price-original-text">券后 ￥</text>
+						<text class="tui-product-price-original">{{ item.goods_yprice || item.goods_price }}</text>
+					</view>
+
+					<!-- 					<text class="tui-product-goods_sale" v-if="item.goods_sale">已售{{ item.goods_sale }}件</text> -->
+				</view>
+				<view class="tui-product-price">
+					<text class="tui-product-goods_shoptype">{{ item.goods_shoptype }}价 {{ item.goods_price }}</text>
+					<text class="tui-product-goods_sale" v-if="item.goods_sale">已售{{ item.goods_sale }}件</text>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+export default {
+	props: {
+		product: {
+			type: Array,
+			default: []
+		}
+	},
+	methods: {
+		detail(item) {
+			var isAdvert = item.target && item.link || false;
+			if (isAdvert) {
+				getApp().globalData.request.navigateTo({
+					target: item.target,
+					url: item.link,
+					title: item.title,
+					desc: item.desc_info,
+					param: item.params,
+					hasLogin: item.hasLogin || 0
+				});
+			} else {
+				this.$emit('detail', {
+					itemid: item.goods_numiid || '',
+					shopType: item.goods_type || ''
+				});
+			}
+		}
+	}
+};
+</script>
+
+<style>
+.product {
+	width: 750rpx;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+.tui-product {
+	width: 355rpx;
+	/* 	height: 560rpx; */
+	background-color: #ffffff;
+	border-width: 1rpx;
+	border-style: solid;
+	border-color: #eaeef1;
+	margin: 10rpx;
+	border-radius: 10rpx;
+}
+
+.tui-mtop {
+	margin-top: 30rpx;
+}
+
+.tui-product:active {
+	background-color: #eeeeee;
+}
+
+.image-view {
+	height: 355rpx;
+	width: 355rpx;
+	position: relative;
+	border-top-left-radius: 10rpx;
+	border-top-right-radius: 10rpx;
+}
+
+.none {
+	height: 355rpx;
+	width: 355rpx;
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0.8);
+	align-items: center;
+	justify-content: center;
+	left: 0;
+	top: 0;
+}
+
+.none-tip {
+	font-size: 28rpx;
+	color: #fa3a3a;
+}
+
+.tui-product-image {
+	height: 355rpx;
+	width: 355rpx;
+	position: absolute;
+}
+
+.product-content-box {
+	width: 355rpx;
+	/* 	height: 180rpx; */
+	padding-top: 5rpx;
+	padding-left: 10rpx;
+	padding-right: 10rpx;
+	position: relative;
+}
+
+.tui-product-title {
+	padding: 10rpx;
+	padding-top: 5rpx;
+}
+
+.product-title {
+	font-size: 26rpx;
+	font-family: PingFang-SC-Regular;
+	font-weight: 400;
+	color: #333333;
+	line-height: 38rpx;
+	/* word-break: break-all; */
+	lines: 1;
+	text-overflow: ellipsis;
+}
+.tui-product-tag {
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	overflow: hidden;
+	padding: 10rpx;
+}
+.tui-product-price {
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	overflow: hidden;
+	padding: 10rpx;
+}
+.tui-product-tag-coupon {
+	font-size: 22rpx;
+	font-weight: 500;
+	color: #ffffff;
+	justify-content: flex-start;
+	padding: 3rpx 8rpx;
+	font-family: PingFangSC-Regular;
+	background-image: linear-gradient(to right, #f75e32, #f23c39);
+	border-radius: 8rpx;
+}
+.tui-product-goods_sale {
+	color: #a0a0a0;
+	font-size: 24rpx;
+	font-weight: 400;
+	text-align: right;
+	justify-content: flex-end;
+}
+.tui-product-price-original {
+	font-size: 28rpx;
+	color: #ea1500;
+	justify-content: flex-start;
+}
+.tui-product-price-original-box {
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+}
+.tui-product-price-original-text {
+	font-size: 20rpx;
+	color: #ea1500;
+	justify-content: flex-start;
+}
+.tui-product-price-favour {
+	color: #a0a0a0;
+	text-decoration: line-through;
+	font-size: 24rpx;
+	font-weight: 400;
+	text-align: right;
+	justify-content: flex-end;
+}
+.tui-product-goods_shoptype {
+	color: #999999;
+	font-size: 24rpx;
+	font-weight: 400;
+	text-align: right;
+	font-family: PingFangSC-Regular;
+	justify-content: flex-start;
+}
+</style>

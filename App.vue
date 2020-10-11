@@ -1,7 +1,11 @@
 <script>
-	import { mapState, mapMutations } from 'vuex';
-	const systemInfo = uni.getSystemInfoSync();
-	const statusBarHeight = Math.round((750 / systemInfo.screenWidth) * systemInfo.statusBarHeight);
+import { mapState, mapMutations } from 'vuex';
+const systemInfo = uni.getSystemInfoSync();
+const statusBarHeight = Math.round((750 / systemInfo.screenWidth) * systemInfo.statusBarHeight);
+import request from './common/httpRequest.js';
+import cache from './common/cache.js';
+import plusListener from '@/common/app-plus/plus-listener.js';
+import plusHelper from '@/common/helper.js';
 	export default {
 		computed: {
 			...mapState(['hasLogin', 'openid', 'userinfo'])
@@ -10,9 +14,11 @@
 			...mapMutations(['login']),
 		},
 		globalData: {
-			systemInfo: systemInfo,
-			statusBarHeight: statusBarHeight + 'rpx',
-			statusBarHeightNum: statusBarHeight,			
+		systemInfo: systemInfo,
+		statusBarHeight: statusBarHeight + 'rpx',
+		statusBarHeightNum: statusBarHeight,
+		request: request,
+		cache: cache
 		},
 		onLaunch: function() {		
 			let userInfo = uni.getStorageSync("userInfo") || "";

@@ -111,11 +111,15 @@
 						console.log(result)
 						var endTime = new Date();
 						console.log("request time " + new Date(endTime - startTime).getTime());
-						const data = result.data.data;
-						// console.log("这里是啥啊");
-						// console.log(data);
-						// console.log(data.length)
-						// console.log("这里是啥啊");
+						var  data = [];
+						// if(result.data.data!=null){
+						
+							 data = result.data.data;
+							 // console.log(typeof(data))
+						// }
+						
+						const data = result.data.data
+						
 						this.isNoData = (data.length <= 0);
 
 						
@@ -150,7 +154,7 @@
 				});
 			},
 			loadMore(e) {
-				console.log('下一也')
+				console.log('下一页')
 				this.loadData();
 			},
 			clear() {
@@ -206,6 +210,8 @@
 				if (Math.abs(e.pullingDistance) > Math.abs(e.viewHeight)) {
 					this.refreshFlag = true;
 					this.refreshText = "释放立即刷新";
+					this.loadData(true);
+					
 				} else {
 					this.refreshFlag = false;
 					this.refreshText = "下拉可以刷新";

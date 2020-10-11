@@ -1,0 +1,93 @@
+<template>
+	<view class="root">
+		<video
+			v-if="refId != ''"
+			:ref="`video_${refId}`"
+			:id="`video_${refId}`"
+			:src="src"
+			@play="playIng"
+			:loop="true"
+			:enable-progress-gesture="false"
+			:page-gesture="false"
+			:initial-time="15"
+			:controls="false"
+			:show-fullscreen-btn="false"
+			:show-center-play-btn="false"
+			:style="boxStyle"
+			@ended="endedPlay"
+		></video>
+	</view>
+</template>
+
+<script>
+export default {
+	watch: {
+		state(newValue, oldValue) {
+	
+			//var  videoCtx = uni.createVideoContext(`video_${this.refId}`, this); 
+			var videoCtx = this.$refs[`video_${this.refId}`]
+			console.log(videoCtx);
+			switch (newValue) {
+				case 'play':
+					videoCtx.play();
+					break;
+				case 'continue':
+					videoCtx.play();
+					break;
+				case 'pause':
+					videoCtx.pause();
+					break;
+				case 'stop':
+					videoCtx.pause();
+					break;
+				default:
+					break;
+			}
+		}
+	},
+	props: {
+		state: {
+			type:Boolean,
+			default(){
+				return false
+			}
+		},
+		src: {
+			type:String,
+			default(){
+				return ''
+			}
+		},
+		boxStyle: {
+			type:Object,
+			default(){
+				return {}
+			}
+		},
+		refId: {
+			type: String,
+			default() {
+				return '';
+			}
+		}
+	},
+ 
+	methods: {
+		endedPlay(e) {
+			this.$emit('ended', e);
+		}
+	}
+};
+</script>
+
+<style>
+.root {
+	background-color: #000000;
+	position: relative;
+}
+.videoImg {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+</style>

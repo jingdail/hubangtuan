@@ -1,0 +1,111 @@
+<template>
+	<view class="grace-select-tags">
+		<block v-for="(item, index) in tagsData" :key="index">
+			<text class="grace-select-tag" :style="{ width: itemWidth, 'background-color': item.checked ? sedColor : '#F6F7F8' }" @tap.stop="graceSelectChange(index)" :class="[item.checked ? 'grace-checked' : '']">{{ item.name }}</text>
+		</block>
+	</view>
+</template>
+<script>
+Array.prototype.indexOf = function(val) {
+	for (var i = 0; i < this.length; i++) {
+		if (this[i] == val) return i;
+	}
+	return -1;
+};
+export default {
+	props: {
+		type: { type: String, default: 'radio' },
+		items: {
+			type: Array,
+			default: function() {
+				return [];
+			}
+		},
+		maxCurrent:{
+			type: Number,
+			default: function() {
+				return 0; //  当为多选的时候最多选择的标签数量，0不限制
+			}
+		},
+		itemWidth: { type: String, default: '220rpx' },
+		sedColor: { type: String, default: '#3688FF' }
+	},
+	created: function() {
+		this.tagsData = this.items;
+	},
+	data() {
+		return {
+			tagsData: []
+		};
+	},
+	methods: {
+		graceSelectChange: function(index) {
+			if (this.type == 'radio') {
+				for (var i = 0; i < this.tagsData.length; i++) {
+					this.tagsData[i].checked = false;
+				}
+				this.tagsData[index].checked = true;
+				this.$emit('change', {
+					value: this.tagsData[index].value,
+					index: index,
+					item: this.tagsData[index]
+				});
+			} else {
+				if(parseInt(this.maxCurrent) > 0 && this.tagsData[index].checked == false) {
+					// 计算得到目前已经选中的数量
+					var checkNum = 0;
+					this.tagsData.forEach((item,index)=>{
+						if(item.checked == true) {
+							checkNum = checkNum+1;
+						}
+					})
+					if( checkNum >= parseInt(this.maxCurrent) ) {
+						// 返回超过的数量 
+						this.$emit('exceedMax', {
+							checkNum:checkNum
+						});
+						return;
+					}
+				}
+				if (this.tagsData[index].checked) {
+					this.tagsData[index].checked = false;
+				} else {
+					this.tagsData[index].checked = true;
+				}
+				var sedRes = [];
+				for (var i = 0; i < this.tagsData.length; i++) {
+					if (this.tagsData[i].checked) {
+						sedRes.push({
+							value: this.tagsData[i].value,
+							index: i,
+							item: this.tagsData[i]
+						});
+					}
+				}
+				this.$emit('change', sedRes);
+			}
+		}
+	}
+};
+</script>
+<style>
+.grace-select-tags {
+	padding: 0;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+.grace-select-tag {
+	padding: 0 20rpx;
+	height: 70rpx;
+	line-height: 70rpx;
+	text-align: center;
+	margin: 10rpx;
+	background-color: #f6f7f8;
+	font-size: 24rpx;
+	border-radius: 8rpx;
+}
+.grace-checked {
+	background-color: #3688ff;
+	color: #ffffff;
+}
+</style>

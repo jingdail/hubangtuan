@@ -1,0 +1,328 @@
+<template>
+	<view class="simple-address" v-if="showPopup" @touchmove.stop.prevent="clear">
+		<!-- 遮罩层 -->
+		<view
+			class="simple-address-mask"
+			@touchmove.stop.prevent="clear"
+			v-if="maskClick"
+			:class="[ani + '-mask', animation ? 'mask-ani' : '']"
+			:style="{
+				'background-color': maskBgColor
+			}"
+			@tap="hideMask(true)"
+		></view>
+
+		<view class="simple-address-content simple-address--fixed" :class="[type, ani + '-content', animation ? 'content-ani' : '']">
+			<view class="simple-address__header">
+				<view class="simple-address__header-btn-box" @click="pickerCancel"><text class="simple-address__header-text">取消</text></view>
+				<view class="simple-address__header-btn-box" @click="pickerConfirm"><text class="simple-address__header-text" :style="{ color: themeColor }">确定</text></view>
+			</view>
+			<view class="simple-address__box">
+				<picker-view indicator-style="height: 70rpx;" class="simple-address-view" :value="pickerValue" @change="pickerChange">
+					<template v-if="mode == 'selector'">
+						<picker-view-column>
+							<!-- #ifndef APP-NVUE -->
+							<view class="selector-item" v-for="(item, index) in pickerItem" :key="index">{{ item.value }}</view>
+							<!-- #endif -->
+							<!-- #ifdef APP-NVUE -->
+							<text class="selector-item" v-for="(item, index) in pickerItem" :key="index">{{ item.value }}</text>
+							<!-- #endif -->
+						</picker-view-column>
+					</template>
+				</picker-view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+export default {
+	name: 'simplePicker',
+	props: {
+		mode: {
+			// selector 则代表单列选择
+			//
+			type: String,
+			default: 'selector'
+		},
+		// 开启动画
+		animation: {
+			type: Boolean,
+			default: true
+		},
+		/* 弹出层类型，可选值；
+				bottom：底部弹出层
+			*/
+		type: {
+			type: String,
+			default: 'bottom'
+		},
+		// maskClick
+		maskClick: {
+			type: Boolean,
+			default: true
+		},
+		show: {
+			type: Boolean,
+			default: true
+		},
+		maskBgColor: {
+			type: String,
+			default: 'rgba(0, 0, 0, 0.4)' //背景颜色 rgba(0, 0, 0, 0.4) 为空则调用 uni.scss
+		},
+		themeColor: {
+			type: String,
+			default: '' // 主题色
+		},
+		/* 默认值 */
+		pickerValueDefault: {
+			type: Array,
+			default() {
+				return [];
+			}
+		},
+		/*数组列表*/
+		pickerItem: {
+			type: Array,
+			default() {
+				return [];
+			}
+		}
+	},
+	data() {
+		return {
+			ani: '',
+			showPopup: false,
+			pickerValue: [],
+		};
+	},
+	watch: {
+		show(newValue) {
+			if (newValue) {
+				this.open();
+			} else {
+				this.close();
+			}
+		},
+		pickerValueDefault() {
+			this.pickerValue = this.pickerValueDefault;
+		}
+	},
+	created() {
+		//this.init()
+	},
+	methods: {
+		pickerChange(e) {
+			let changePickerValue = e.detail.value;
+			this.pickerValue = changePickerValue;
+			this._$emit('onChange');
+		},
+		_$emit(emitName) {
+			let pickObj = {
+				value: this.__getPickerValue(),
+				item: this.__getPickerItem(),
+				mode: this.mode,
+				pickerValue:this.pickerValue
+			};
+			this.$emit(emitName, pickObj);
+		},
+		__getPickerValue() {
+			if (this.mode == 'selector') {
+				// 单选时只返回索引
+				return {
+					index: typeof  this.pickerValue  == "object" ?  this.pickerValue[0] :  this.pickerValue
+				};
+			} else if (this.mode == 'multiSelector') {
+				// 多列选择 返回 [0,0,0]
+			}
+		},
+		__getPickerItem(){
+			if (this.mode == 'selector') {
+				// 单选时只返回索引
+				return this.pickerItem[this.__getPickerValue()['index']] || {}
+			} else if (this.mode == 'multiSelector') {
+				// 多列选择 返回 [0,0,0]
+			}
+		},
+		clear() {},
+		hideMask() {
+			this._$emit('onCancel');
+			this.close();
+		},
+		pickerCancel() {
+			this._$emit('onCancel');
+			this.close();
+		},
+		pickerConfirm() {
+			this._$emit('onConfirm');
+			this.close();
+		},
+		open() {
+			this.showPopup = true;
+			this.$nextTick(() => {
+				setTimeout(() => {
+					this.ani = 'simple-' + this.type;
+				}, 100);
+			});
+		},
+		close(type) {
+			if (!this.maskClick && type) return;
+			this.ani = '';
+			this.$nextTick(() => {
+				setTimeout(() => {
+					this.showPopup = false;
+				}, 300);
+			});
+		}
+	}
+};
+</script>
+
+<style lang="scss" scoped>
+.simple-address {
+	/* #ifndef APP-NVUE */
+	display: flex;
+	/* #endif */
+	flex-direction: column;
+}
+
+.simple-address-mask {
+	position: fixed;
+	bottom: 0;
+	top: 0;
+	left: 0;
+	right: 0;
+
+	transition-property: opacity;
+	transition-duration: 0.3s;
+	opacity: 0;
+	/* #ifndef APP-NVUE */
+	z-index: 99;
+	/* #endif */
+}
+
+.mask-ani {
+	transition-property: opacity;
+	transition-duration: 0.2s;
+}
+
+.simple-bottom-mask {
+	opacity: 1;
+}
+
+.simple-center-mask {
+	opacity: 1;
+}
+
+.simple-address--fixed {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	transition-property: transform;
+	transition-duration: 0.3s;
+	transform: translateY(460rpx);
+	/* #ifndef APP-NVUE */
+	z-index: 99;
+	/* #endif */
+}
+
+.simple-address-content {
+	background-color: #ffffff;
+}
+
+.simple-content-bottom {
+	bottom: 0;
+	left: 0;
+	right: 0;
+	transform: translateY(500rpx);
+}
+
+.content-ani {
+	transition-property: transform, opacity;
+	transition-duration: 0.2s;
+}
+
+.simple-bottom-content {
+	transform: translateY(0);
+}
+
+.simple-center-content {
+	transform: scale(1);
+	opacity: 1;
+}
+
+.simple-address__header {
+	position: relative;
+	/* #ifndef APP-NVUE */
+	display: flex;
+	/* #endif */
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	border-bottom-color: #f2f2f2;
+	border-bottom-style: solid;
+	border-bottom-width: 1rpx;
+}
+
+.simple-address--fixed-top {
+	/* #ifndef APP-NVUE */
+	display: flex;
+	/* #endif */
+	flex-direction: row;
+	justify-content: space-between;
+	border-top-color: $uni-border-color;
+	border-top-style: solid;
+	border-top-width: 1rpx;
+}
+
+.simple-address__header-btn-box {
+	/* #ifndef APP-NVUE */
+	display: flex;
+	/* #endif */
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	height: 70rpx;
+}
+
+.simple-address__header-text {
+	text-align: center;
+	font-size: $uni-font-size-base;
+	color: #1aad19;
+	line-height: 70rpx;
+	padding-left: 40rpx;
+	padding-right: 40rpx;
+}
+
+.simple-address__box {
+	position: relative;
+}
+
+.simple-address-view {
+	position: relative;
+	bottom: 0;
+	left: 0;
+	/* #ifndef APP-NVUE */
+	width: 100%;
+	/* #endif */
+	/* #ifdef APP-NVUE */
+	width: 750rpx;
+	/* #endif */
+	height: 408rpx;
+	background-color: rgba(255, 255, 255, 1);
+}
+
+.picker-item {
+	text-align: center;
+	line-height: 70rpx;
+	text-overflow: ellipsis;
+	font-size: 28rpx;
+}
+.selector-item {
+	text-align: center;
+	line-height: 70rpx;
+	text-overflow: ellipsis;
+	font-size: 28rpx;
+}
+</style>

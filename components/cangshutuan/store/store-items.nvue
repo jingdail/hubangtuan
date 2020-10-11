@@ -1,0 +1,186 @@
+<template>
+	<view>
+		<view class="tui-product" :class="[index === 0 || index === 1 ? 'tui-mtop' : '']" @click="detail(item)" :ref="'listItem' + index">
+			<view class="image-view">
+				<image class="tui-product-image" :src="item.goods_picture"  placeholder="/static/img/ic_default_placeholder.png"></image>
+				<view class="none" v-if="index === 0"><text class="none-tip">点击售罄返回</text></view>
+			</view>
+			<view class="product-content-box">
+				<view class="tui-product-title">
+					<text class="product-title">{{ item.goods_dtitle }}</text>
+				</view>
+
+				<view class="tui-product-price">
+					<view class="tui-product-price-original-box">
+						<text class="tui-product-price-original-text">￥</text>
+						<text class="tui-product-price-original">{{ item.goods_yprice  }}</text>
+					</view>
+					<text class="tui-product-goods_price" v-if="item.goods_price">￥{{ item.goods_price }}</text>
+				</view>
+				<view class="tui-product-price">
+					<text class="tui-product-goods_sale" v-if="item.goods_sale">{{ item.goods_sale }}人付款</text>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+export default {
+	props: {
+		item: {
+			type: Object,
+			default: {}
+		},
+		index: {
+			type: Number,
+			default: 0
+		}
+	},
+	methods: {
+		detail(item) {
+			var isAdvert = item.target && item.link || false;
+			if (isAdvert) {
+				getApp().globalData.request.navigateTo({
+					target: item.target,
+					url: item.link,
+					title: item.title,
+					desc: item.desc_info,
+					param: item.params,
+					hasLogin: item.hasLogin || 0
+				});
+			} else {
+				this.$emit('detail', {
+					itemid: item.goods_numiid || '',
+					shopType: item.goods_type || ''
+				});
+			}
+		}
+	}
+};
+</script>
+
+<style>
+.tui-product {
+	width: 355rpx;
+	background-color: #ffffff;
+	border-width: 1rpx;
+	border-style: solid;
+	border-color: #eaeef1;
+	border-radius: 10rpx;
+	margin-bottom: 20rpx;
+}
+
+.tui-mtop {
+	margin-top: 30rpx;
+}
+
+.tui-product:active {
+	background-color: #eeeeee;
+}
+
+.image-view {
+	height: 350rpx;
+	width: 350rpx;
+	position: relative;
+	border-top-left-radius: 10rpx;
+	border-top-right-radius: 10rpx;
+}
+
+.tui-product-image {
+	height: 350rpx;
+	width: 350rpx;
+	position: absolute;
+	border-top-left-radius: 10rpx;
+	border-top-right-radius: 10rpx;
+}
+
+.none {
+	height: 350rpx;
+	width: 350rpx;
+	border-top-left-radius: 10rpx;
+	border-top-right-radius: 10rpx;
+	position: absolute;
+	background-color: rgba(0, 0, 0, 0.8);
+	align-items: center;
+	justify-content: center;
+	left: 0;
+	top: 0;
+}
+
+.none-tip {
+	font-size: 28rpx;
+	color: #fa3a3a;
+}
+
+
+.product-content-box {
+	width: 355rpx;
+	padding-top: 5rpx;
+	padding-left: 10rpx;
+	padding-right: 10rpx;
+	position: relative;
+}
+
+.tui-product-title {
+	padding: 10rpx;
+}
+
+.product-title {
+	font-size: 22rpx;
+	font-family: PingFang-SC-Regular;
+	font-weight: 400;
+	color: #333333;
+	lines: 2;
+	text-overflow: ellipsis;
+}
+.tui-product-tag {
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	overflow: hidden;
+	padding: 10rpx;
+}
+.tui-product-price {
+	flex-direction: row;
+	align-items: center;
+	overflow: hidden;
+	padding: 10rpx;
+}
+
+.tui-product-goods_sale {
+	color: #a0a0a0;
+	font-size: 22rpx;
+	font-weight: 400;
+}
+.tui-product-goods_price{
+	color: #a0a0a0;
+	font-size: 22rpx;
+	font-weight: 400;
+	margin-left: 20rpx;
+	text-decoration: line-through;
+}
+.tui-product-price-original {
+	font-size: 28rpx;
+	color: #ea1500;
+
+}
+.tui-product-price-original-box {
+	flex-direction: row;
+	align-items: center;
+}
+.tui-product-price-original-text {
+	font-size: 20rpx;
+	color: #ea1500;
+	justify-content: flex-start;
+}
+.tui-product-price-favour {
+	color: #a0a0a0;
+	text-decoration: line-through;
+	font-size: 24rpx;
+	font-weight: 400;
+	text-align: right;
+	justify-content: flex-end;
+}
+
+</style>

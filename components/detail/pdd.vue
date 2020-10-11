@@ -18,7 +18,7 @@
 				<view class="item">
 					<view class="shiliimg">
 						<view class="changeImage">示例验证图</view>
-						<image  :src="slt"  @click="previewShiliImage()" mode="widthFix">
+						<image  :src="slt"  @click="previewShiliImage()" mode="aspectFill">
 						<!-- <image class="sss" :src="slt[0]" @click="previewShiliImage()" mode="widthFix"> -->
 					</view>
 				</view>
@@ -26,7 +26,7 @@
 					
 					<view class="del-btn-box" v-if="pic" style="">
 						<view class="del-btn" @click="delPic()">删除图片</view>
-						<image class="sss" :src="pic" @click="previewImage()" mode="widthFix" v-if="pic">
+						<image class="sss" :src="pic" @click="previewImage()" mode="aspectFill" v-if="pic">
 					</view>
 					<view class="hbt-upload" v-else>
 						<view class="changeImage1" @click="chose()">
@@ -42,6 +42,8 @@
 </template>
 
 <script>
+	import { mapState, mapMutations } from 'vuex';
+
 	export default {
 		props: {
 			content: {
@@ -75,7 +77,7 @@
 			}
 		},
 		computed: {
-			// ...mapState(['hasLogin', 'openid', 'userinfo'])
+			...mapState(['hasLogin'])
 		},	
 		methods: {
 			// ...mapMutations(['login']),
@@ -99,6 +101,9 @@
 					})
 					return false;
 				}
+				console.log(this.hasLogin)
+				console.log(this.hasLogin)
+				console.log(this.hasLogin)
 				if(!this.hasLogin){
 					let currentPage = "/pages/index/detail";
 					let url = '/pages/login/login?query='+encodeURIComponent(JSON.stringify(currentPage))
@@ -166,7 +171,7 @@
 					provider: "weixin",
 					scene: "WXSceneSession",
 					type: 1,
-					summary: "互帮团是一款集互助砍价和自由发布任务的平台",
+					summary: this.content,
 					success: function(res) {
 						console.log("success:" + JSON.stringify(res));
 					},
@@ -187,9 +192,9 @@
 
 
 <style>
-	.sss{
-		width: 320px;
-		height: 400px;
+	image{
+		width: 300px;
+		height: 200px;
 	}
 	.btn-box{
 		display: flex;
@@ -301,7 +306,7 @@
 	}
 	
 	.changeImage1 {
-		color: #007AFF;
+		border:1px solid red;
 		width: 100%;
 		height: 100%;
 		color: #FF5000;
@@ -313,7 +318,7 @@
 	
 	.del-btn-box{
 		position: relative;
-		border: 1px solid #0081FF;
+		/* border: 1px solid #; */
 	}
 	.del-btn{
 		position: absolute;

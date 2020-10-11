@@ -1,0 +1,220 @@
+<template>
+	<view class="s-bg-white product-item" @click="detail(item)" @longpress="longpress">
+		<view class="s-ceil s-padding find-head-content">
+			<image class="product-image " :src="item['goods_picture']" placeholder="/static/img/ic_default_placeholder_220.png"></image>
+			<view class="s-list-content head-content">
+				<view class="goods-title-box">
+					<text class="cst-iconfont goods-title-icon" v-if="item.goods_type == 1">&#xe633;</text>
+					<text class="cst-iconfont goods-title-icon icon-taobao" v-else-if="item.goods_type == 2">&#xe634;</text>
+					<text class="cst-iconfont goods-title-icon" v-else-if="item.goods_type == 3">&#xe632;</text>
+					<text class="cst-iconfont goods-title-icon" v-else>&#xe663;</text>
+					<text class="goods-title">{{ item.goods_dtitle || item.goods_title }}</text>
+				</view>
+
+				<view class="s-rows s-space-between">
+					<view class="tui-product-tag">
+						<text class="tui-product-tag-coupon" v-if="item.coupon_money">{{ item.coupon_money }}元券</text>
+					</view>
+					<view class="tui-product-tag">
+						<text class="tui-product-tag-tkmoney" v-if="item.tkmoney">最高返{{ item.tkmoney }}元</text>
+					</view>
+				</view>
+
+				<view class="tui-product-price price-mgt-10">
+					<view class="tui-product-price-original-box">
+						<text class="tui-product-price-original-text">券后 ￥</text>
+						<text class="tui-product-price-original">{{ item.goods_yprice || item.goods_price }}</text>
+					</view>
+				</view>
+
+				<view class="tui-product-price">
+					<text class="tui-product-goods_shoptype" v-if="item.goods_price">{{ item.goods_shoptype || item.shopType }}价 {{ item.goods_price }}</text>
+					<text class="tui-product-goods_sale" v-if="item.goods_sale">已售{{ item.goods_sale }}件</text>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+export default {
+	props: {
+		item: {
+			type: Object,
+			default: {}
+		},
+		index: {
+			type: Number,
+			default: 0
+		}
+	},
+	data() {
+		return {
+			app_product_tkmoney_show: true
+		};
+	},
+	created() {
+		this.app_product_tkmoney_show = getApp().globalData.request.config('app_product_tkmoney_show') == 1 ? true : false;
+	},
+	methods: {
+		detail(item) {
+			var isAdvert = item.target && item.link || false;
+			if (isAdvert) {
+				getApp().globalData.request.navigateTo({
+					target: item.target,
+					url: item.link,
+					title: item.title,
+					desc: item.desc_info,
+					param: item.params,
+					hasLogin: item.hasLogin || 0
+				});
+			} else {
+				this.$emit('detail', {
+					itemid: item.goods_numiid || '',
+					goods_type: item.goods_type || '',
+					index: this.index
+				});
+			}
+		},
+		longpress(event) {
+			this.$emit('longpress', {
+				event: event,
+				item: this.item,
+				index: this.index
+			});
+		}
+	}
+};
+</script>
+
+<style>
+.price-mgt-10 {
+	margin-top: 10rpx;
+}
+.product-item {
+	margin-bottom: 10rpx;
+	padding: 5rpx;
+}
+.goods-title-box {
+	flex-direction: row;
+	flex-wrap: nowrap;
+}
+.goods-title {
+	lines: 1;
+	font-size: 30rpx;
+	color: #333333;
+	position: relative;
+	font-weight: 400;
+	line-height: 55rpx;
+	height: 55rpx;
+	width: 460rpx;
+	font-family: PingFangSC-Regular;
+}
+.goods-title-icon {
+	width: 30rpx;
+	color: red;
+	line-height: 55rpx;
+	height: 55rpx;
+	font-size: 28rpx;
+}
+.icon-taobao {
+	font-size: 32rpx;
+}
+.product-image {
+	width: 220rpx;
+	height: 220rpx;
+	border-radius: 5rpx;
+}
+.find-head-content {
+	border-bottom-width: 0rpx !important;
+}
+.head-content {
+	padding-left: 15rpx;
+	margin-top: 0rpx !important;
+	padding-top: 0rpx !important;
+}
+.tui-product-goods_shoptype {
+	color: #999999;
+	font-size: 24rpx;
+	font-weight: 400;
+	text-align: right;
+	font-family: PingFangSC-Regular;
+	justify-content: flex-start;
+}
+.tui-product-price {
+	flex-direction: row;
+	align-items: flex-end;
+	justify-content: space-between;
+	overflow: hidden;
+	padding: 10rpx;
+}
+.tui-product-goods_shoptype {
+	color: #999999;
+	font-size: 24rpx;
+	font-weight: 400;
+	text-align: right;
+	font-family: PingFangSC-Regular;
+	justify-content: flex-start;
+}
+.tui-product-goods_sale {
+	color: #a0a0a0;
+	font-size: 24rpx;
+	font-weight: 400;
+	text-align: right;
+	justify-content: flex-end;
+}
+.tui-product-price-original {
+	font-size: 32rpx;
+	color: #ea1500;
+	justify-content: flex-start;
+}
+.tui-product-price-original-box {
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+}
+.tui-product-price-original-text {
+	font-size: 20rpx;
+	color: #ea1500;
+	justify-content: flex-start;
+}
+.tui-product-tag {
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	overflow: hidden;
+	padding: 10rpx;
+	margin-top: 15rpx;
+	margin-bottom: 5rpx;
+}
+.tui-product-tag-coupon {
+	font-size: 22rpx;
+	font-weight: 500;
+	color: #ffffff;
+	justify-content: flex-start;
+	padding: 3rpx 8rpx;
+	font-family: PingFangSC-Regular;
+	background-image: linear-gradient(to right, #f75e32, #f23c39);
+	border-radius: 8rpx;
+}
+.tui-product-tag-tkmoney {
+	font-size: 22rpx;
+	font-weight: 500;
+	color: #ff3b32;
+	justify-content: flex-start;
+	padding: 3rpx 8rpx;
+	font-family: PingFangSC-Regular;
+	border-width: 1rpx;
+	border-color: #ff9793;
+	border-radius: 8rpx;
+}
+.s-ceil {
+	padding: 25rpx 0;
+	border-bottom-width: 1rpx;
+	border-bottom-style: solid;
+	border-bottom-color: #E9E9E9;
+	align-items: center;
+	flex-direction: row;
+	flex-wrap: nowrap;
+}
+</style>

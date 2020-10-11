@@ -101,13 +101,15 @@
 				this.payProvider = evt.detail.value
 			},			
 			async requestPayment() {//发起支付
+			    
 			    let orderInfo = await this.getOrderInfo(this.payProvider);
 			    console.log("得到订单信息", orderInfo);
 				
 			    if (orderInfo.statusCode !== 200) {
 			        console.log("获得订单信息失败", orderInfo);
+					if(this.this.payProvider==""){let info ="请选择支付方式";}else{info ="获得订单信息失败"}
 			        uni.showModal({
-			            content: "获得订单信息失败",
+			            content: info,
 			            showCancel: false
 			        })
 			        return;
@@ -144,16 +146,26 @@
 			    })
 			},
 			getOrderInfo(e) {//得到信息
+			if(e==""){
+				this.$queue.showToast("请选择支付方式");
+				return false;
+			}
+			
 			    let appid = "";
 			    // #ifdef APP-PLUS
 			    appid = plus.runtime.appid;
 			    // #endif
 				let url = this.$Api('pay')+'?payid=' + e + '&appid=' + appid + '&total='+this.confimPrice;
 			    return new Promise((res) => {
+					console.log(url)
 			        uni.request({
 			            url: url,
+						header:{
+							token: uni.getStorageSync('userInfo').token
+						},
 			            success: (result) => {
 			                res(result);
+							console.log(result)
 			            },
 			            fail: (e) => {
 			                res(e);

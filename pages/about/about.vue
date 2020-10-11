@@ -1,14 +1,14 @@
 <template>
 	<view class="container">
 		<view class="logo">
-			<view><image src="../../static/logo.png" mode=""></image></view>
-			<view class="app-nv">小钉耙00</view>
+			<view><image src="../../static/logo.png" mode="" style=""></image></view>
+			<view class="app-nv">互帮团 v1.0</view>
 		</view>
 		<view class="cover-container">
 			<view class="history-section icon">	
 				<list-cell title="用户协议" @eventClick="navTo('/pages/about/xieyi')"></list-cell>
 				<list-cell title="隐私政策" @eventClick="navTo('/pages/about/ys')"></list-cell>				
-				<list-cell title="微信客服" @eventClick="copyHref()" tips="微信号"></list-cell>
+				<list-cell title="微信客服" @eventClick="copyHref()" tips="xiaobin987"></list-cell>
 			</view>
 		</view>
 	</view>
@@ -101,12 +101,12 @@
 		width: 100%;		
 	}
 	.logo image{
-		width: 72px;
-		height: 72px;
+		width: 200upx;
+		height: 200upx;
 	}
 	.app-nv{
-		color: #333;
-		font-size: 16px;
+		color: #252525;
+		font-size: 32upx;
 		padding: 10px;
 	}
 </style>

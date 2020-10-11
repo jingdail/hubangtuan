@@ -1,7 +1,7 @@
 const Base = "https://api.hubangtuan.cn/";
 module.exports = {
 	base:Base,
-	list: Base + 'lists/',
+	list: Base + 'index/lists/',
 	category: Base + 'json/categories.json',
 	publish: Base + "api/publish",
 	uploadpic: Base + "index/pic",

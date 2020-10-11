@@ -2,9 +2,7 @@
 	<view class="login">
 		<view class="content">
 			<!-- 头部logo -->
-			<view class="header" style="display: none;">
-				<!-- <image :src="logoImage"></image> -->
-			</view>
+			<view class="hbt-close cuIcon-close" @tap="goUser()"></view>
 			<!-- 主体表单 -->
 			<view class="main" style="margin-top: 100upx;">
 				<wInput v-model="phoneData" name="phoneData " type="text" maxlength="11" placeholder="手机"></wInput>
@@ -14,13 +12,21 @@
 			</view>
 			<wButton class="wbutton" text="暂仅支持微信登录" :rotate="isRotate" @click.native="startLogin()"></wButton>
 			<!-- 其他登录 -->
+			<view class="xieyi">
+			<text class="cuIcon-roundcheckfill check"></text>
+			登录即表示同意
+			<text @tap="navTo('xieyi')">《用户协议》</text>
+			和
+			<text @tap="navTo('ys')">《隐私政策》</text>
+			</view>
+			<view class="or">或</view>
 			<view class="other_login cuIcon">
 				<view class="login_icon">
 					<view class="cuIcon-weixin" @tap="login_weixin"></view>
 				</view>
-				
+				<!-- <view class="login-weixin-info">微信登录</view> -->
 			</view>
-			<view class="login-weixin-info">微信登录</view>
+			
 
 		</view>
 	</view>
@@ -71,6 +77,9 @@
 		},
 		methods: {
 			...mapMutations(['login']),
+			goUser(){
+				uni.navigateBack({})
+			},
 			getVerCode() {
 				//获取验证码
 				var rule = [{
@@ -135,9 +144,9 @@
 				});*/
 					this.login({  
 								                avatarUrl: 'https://thirdwx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEJzgueBUDbItZ7NPZbU0WJ8NEKsD5q3LpwfI2jibdHCzpnh3bURV3icETSHJ6oGyLbGFpbFDPHJm6Eg/132',  
-								                token: 'aec11def2986125bc8e80332036f1d3c',  
+								                token: '57f2700e444b6c0db983db5a2c57ced7',  
 								                nickname: 'zhang',
-												jinbi:9939300
+												jinbi:450000
 								})
 								uni.switchTab({
 									url: '/pages/member/user'
@@ -265,15 +274,15 @@
 										console.log(JSON.stringify(res))
 
 										if (res.data.error == 0) {
-											uni.showToast({
-												title: '登陆成功',
-												mask: false,
-												duration: 1500
-											});
+											// uni.showToast({
+											// 	title: '登陆成功',
+											// 	mask: false,
+											// 	duration: 1500
+											// });
 
 											this.$queue.setData('username', info.userInfo.nickName)
 											this.$queue.setData('avatarUrl', info.userInfo.avatarUrl)
-											this.$queue.setData('token', res.data.token)
+											// this.$queue.setData('token', res.data.token)
 											this.$queue.setData('phone', res.data.mobile)
 											this.login({
 											    avatarUrl: info.userInfo.avatarUrl,  
@@ -283,9 +292,10 @@
 											})
 											//如果没有绑定手机，去绑定 
 											if (res.data.mobile == '' || res.data.mobile == null) {
-												uni.redirectTo({
+											
+												setTimeout(uni.redirectTo({
 													url: '/pages/login/forget'
-												});
+												}),2000)
 												return false;
 											}
 											uni.switchTab({
@@ -329,6 +339,11 @@
 						});
 					}
 				})
+			},
+			navTo(e){
+				uni.navigateTo({
+					url:'../about/'+e
+				})
 			}
 		}
 	}
@@ -337,9 +352,27 @@
 <style>
 	@import url("../../components/watch-login/css/icon.css");
 	@import url("./css/main.css");
-
-	.other_login {
+	.or{
 		margin-top: 50px;
+		font-size: 40upx;
+		text-align: center;
+		color: #555;
+	}
+	
+	.xieyi{
+		margin-left: 40px;
+		margin-top: 10px;
+		color: #555555;
+	}
+	.xieyi text{
+		color: #FF5000;
+	}
+	.other_login {
+		margin: 50px auto 0 auto;
+		width: 150upx;
+		height: 150upx;
+		border-radius: 1000upx;
+		border: 0.5px solid #eee;
 	}
 
 	page {
@@ -347,7 +380,7 @@
 	}
 
 	.wbutton {
-		margin-top: 120rpx;
+		margin-top: 80rpx;
 		font-size: 34rpx
 	}
 	.login_icon{
@@ -359,6 +392,11 @@
 		/* margin-top: 10upx; */
 		font-size: 22upx;
 		color: #282828;
+		
+	}
+	.hbt-close{
+		font-size: 24px;
+		padding-left: 20px;
 	}
 </style>
 
